@@ -5,9 +5,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import dtc.isw.client.Client;
+import dtc.isw.domain.Usuario;
 
 /**
  * Displays the user's profile
@@ -15,7 +17,7 @@ import dtc.isw.client.Client;
 public class JPerfil extends JFrame {
     JButton modificar;
     JButton volver;
-    int numVars = 3;
+    int numVars = 4;
     JLabel[] labels = new JLabel[numVars];
     JLabel[] variables = new JLabel[numVars];
     ArrayList<String> listVars = new ArrayList<>();
@@ -34,6 +36,7 @@ public class JPerfil extends JFrame {
         labels[0] = new JLabel("Username");
         labels[1] = new JLabel("Password");
         labels[2] = new JLabel("E-mail");
+        labels[3]= new JLabel("Puntos");
 
         // Make the labels go bold
         for (JLabel label : labels) {
@@ -43,26 +46,29 @@ public class JPerfil extends JFrame {
 
 
         Client cl = new Client();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("id",usuario);
+        cl.enviar("/getPerfil",map);
+        Usuario u = (Usuario) map.get("Respuesta");
+
+        //Extracting basic information
+        String name = u.getUsername();
+        String password = u.getPassword();
+        String mail = u.getCorreo();
+        String p = Integer.toString(u.getPuntos());
+        ArrayList<String> a = new ArrayList<String>(Arrays.asList(name,password,mail,p));
 
         // Make the requests to get all the columns we want from the database
-        for (int i = 1; i <= numVars ; ++i) {
-            HashMap<String, Object> map = new HashMap<>();
-
-            map.put("table", "listausuarios");
-            map.put("condicion", "username='" + usuario + "'");
-            map.put("columna", i);
-
-            cl.enviar("/getColumnInfo", map);
-
-            //System.out.println(map.get("Respuesta"));
-
-            // Parse the response so that it fits to our requirements
-            String respuestaUsername = map.get("Respuesta").toString();
-            String formatted_resp = respuestaUsername.substring(respuestaUsername.indexOf("=")+1, respuestaUsername.indexOf('}'));
+        for (int i = 0; i < numVars; ++i) {
+            String respuestaUsername = a.get(i);
+            /*
+            String formatted_resp = respuestaUsername.substring(respuestaUsername.indexOf("="), respuestaUsername.indexOf('}'));
 
             if (!formatted_resp.equals("{")){
                 listVars.add(formatted_resp);
             }
+            */
+            listVars.add(respuestaUsername);
 
         }
 
@@ -96,7 +102,7 @@ public class JPerfil extends JFrame {
         title.setLayout(new GridLayout(2, 1,0 , 1));
 
         // Call the method that does all the layout work
-        JPanel form = createForm(labels, variables,10,10,10,10);
+        JPanel form = createForm(labels, variables,10,10,100,20);
 
 
         volver = new JButton("Volver atrás");
@@ -120,6 +126,7 @@ public class JPerfil extends JFrame {
         pnlSouth.add(new JLabel("Mesa:"));
         pnlSouth.add(new JLabel("Hora Inicial:"));
         pnlSouth.add(new JLabel("Hora Final:"));
+        /*
         for (int i = 1; i <= 3 ; ++i) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("table", "listaasientos");
@@ -143,6 +150,7 @@ public class JPerfil extends JFrame {
             String s = (String) h.get("0");
             pnlSouth.add(new JLabel(s));
         }
+         */
 
         this.pack();
         getContentPane().add(title, BorderLayout.NORTH);

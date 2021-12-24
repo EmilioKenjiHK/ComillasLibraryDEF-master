@@ -5,10 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
-import dtc.isw.domain.Customer;
+import dtc.isw.domain.*;
 
 public class CustomerDAO {
 
@@ -43,12 +42,12 @@ public class CustomerDAO {
 
     }
 
-    public static boolean checkCustomerCond(String tabla, String user, String cond , int column) {
+    public static boolean checkLogin(String user, String password) {
         Connection con = ConnectionDAO.getInstance().getConnection();
-        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM " + tabla + " WHERE " + cond);
+        try (PreparedStatement pst = con.prepareStatement("SELECT username,password FROM usuarios");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                if (user.equals(rs.getString(column))) {
+                if (user.equals(rs.getString(1)) && password.equals(rs.getString(2))) {
                     System.out.println("Encontrado");
                     return true;
                 }
@@ -64,122 +63,174 @@ public class CustomerDAO {
         return false;
     }
 
-    public static boolean checkCustomer(String tabla, String user, int column) {
+    public static Usuario getPerfil(String username) {
         Connection con = ConnectionDAO.getInstance().getConnection();
-        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM " + tabla);
+        Usuario usuario = new Usuario("","","",0);
+        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM usuarios WHERE username = '" + username + "'");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                if (user.equals(rs.getString(column))) {
-                    System.out.println("Encontrado");
-                    return true;
+                usuario.setUsername(rs.getString(1));
+                usuario.setPassword(rs.getString(2));
+                usuario.setCorreo(rs.getString(3));
+                usuario.setPuntos(Integer.parseInt(rs.getString(5)));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return usuario;
+    }
+
+    public static HashMap<String,Object> getBibliotecas()
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        ArrayList<Biblioteca> a = new ArrayList<Biblioteca>();
+        HashMap<String,Object> res = new HashMap<String,Object>();
+        Integer i = 0;
+        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM asientos WHERE ocupado = false ORDER BY biblioteca asc");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                a.add(i,new Biblioteca(rs.getString(1)));
+                i +=1 ;
+            }
+            for(Integer j = 0; j<a.size();j++)
+            {
+                res.put(j.toString(),a.get(j));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return res;
+    }
+
+    public static HashMap<String,Object> getPlantas(String biblioteca)
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        ArrayList<Planta> a = new ArrayList<Planta>();
+        HashMap<String,Object> res = new HashMap<String,Object>();
+        Integer i = 0;
+        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM asientos WHERE ocupado = false AND biblioteca = '" + biblioteca + "' ORDER BY planta asc");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                a.add(i,new Planta(rs.getString(2)));
+                i +=1 ;
+            }
+            for(Integer j = 0; j<a.size();j++)
+            {
+                res.put(j.toString(),a.get(j));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return res;
+    }
+
+    public static HashMap<String,Object> getMesas(String biblioteca,String planta)
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        ArrayList<Mesa> a = new ArrayList<Mesa>();
+        HashMap<String,Object> res = new HashMap<String,Object>();
+        Integer i = 0;
+        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM asientos WHERE ocupado = false AND biblioteca = '" + biblioteca + "' AND planta = '" + planta + "' ORDER BY mesa asc");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                a.add(i,new Mesa(rs.getString(3)));
+                i +=1 ;
+            }
+            for(Integer j = 0; j<a.size();j++)
+            {
+                res.put(j.toString(),a.get(j));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return res;
+    }
+
+    public static int getID(int inicial)
+    {
+        Connection con=ConnectionDAO.getInstance().getConnection();
+        int fin = inicial+1;
+        try (PreparedStatement pst = con.prepareStatement("SELECT id FROM reservas");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                Integer i = Integer.parseInt(rs.getString(1));
+                if(inicial < i)
+                {
+                    fin = i+1;
+                    inicial = i;
                 }
-                /*else {
-                    System.out.println("NO encontrado");
-                    return false;
-                }*/
             }
+        } catch (SQLException ex) {
+
+            System.out.println(ex.getMessage());
+        }
+        return fin;
+    }
+
+    public static void updateAsiento(String biblioteca,String planta, String mesa, int id) // SET ID (HOW TO PUT MULTIPLE SETS
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        String condicion = "biblioteca = '" + biblioteca + "' AND planta = '" + planta + "' AND mesa = '" + mesa + "'";
+        try (PreparedStatement pst = con.prepareStatement("UPDATE asientos SET ocupado='true', idreserva = '" + id + "' WHERE " + condicion);
+             ResultSet rs = pst.executeQuery()) {
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        System.out.println("NO encontrado");
-        return false;
     }
 
-    public static HashMap<String,Object> getColumnCond(String table, String condicion, int column)
+    public static void insertReserva(Reserva reserva,String username)
     {
         Connection con = ConnectionDAO.getInstance().getConnection();
-        ArrayList<String> a = new ArrayList<String>();
+        String valor = "'" + reserva.getIdreserva() + "','" + reserva.getHi() + "','" + reserva.getHf() + "','" + username + "'";
+        try(PreparedStatement pst = con.prepareStatement("INSERT INTO reservas VALUES (" + valor + ")");
+            ResultSet rs = pst.executeQuery()) {
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public static HashMap<String,Object> getReservas(String username)
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        ArrayList<Reserva> a = new ArrayList<Reserva>();
         HashMap<String,Object> res = new HashMap<String,Object>();
         Integer i = 0;
-        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM " + table + " WHERE " + condicion);
+        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM reservas WHERE username = '" + username + "' ORDER BY id asc");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                a.add(i,rs.getString(column));
+                a.add(i,new Reserva((Integer) Integer.parseInt(rs.getString(1)), rs.getString(2),rs.getString(3)));
                 i +=1 ;
             }
-            Collections.sort(a);
             for(Integer j = 0; j<a.size();j++)
             {
                 res.put(j.toString(),a.get(j));
             }
-            return res;
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        System.out.println("Tabla NO encontrado");
         return res;
     }
 
-    public static HashMap<String,Object> getColumn(String table, int column)
+    public static void deleteReserva(int id) //id de la Reserva
     {
         Connection con = ConnectionDAO.getInstance().getConnection();
-        ArrayList<String> a = new ArrayList<String>();
-        HashMap<String,Object> res = new HashMap<String,Object>();
-        Integer i = 0;
-        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM " + table);
+        try(PreparedStatement pst = con.prepareStatement("DELETE FROM reservas WHERE id = '" + id + "'");
+            ResultSet rs = pst.executeQuery()) {
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public static void liberarAsiento(int id)
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        try (PreparedStatement pst = con.prepareStatement("UPDATE asientos SET ocupado='false', idreserva = null WHERE idreserva = '" + id + "'");
              ResultSet rs = pst.executeQuery()) {
-            while (rs.next()) {
-                a.add(i,rs.getString(column));
-                i +=1 ;
-            }
-            Collections.sort(a);
-            for(Integer j = 0; j<a.size();j++)
-            {
-                res.put(j.toString(),a.get(j));
-            }
-            return res;
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-        System.out.println("Tabla NO encontrado");
-        return res;
-    }
-
-    public static void updateColumnCond(String tabla, String valor, String condicion)
-    {
-        Connection con = ConnectionDAO.getInstance().getConnection();
-        try(PreparedStatement pst = con.prepareStatement("UPDATE " + tabla + " SET " + valor + " WHERE " + condicion);
-            ResultSet rs = pst.executeQuery()) {
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        //System.out.println("Tabla NO encontrado");
-
-    }
-
-    public static void updateColumn(String tabla, String valor) // En caso de ser necesario utilizarlo
-    {
-        Connection con = ConnectionDAO.getInstance().getConnection();
-        try(PreparedStatement pst = con.prepareStatement("UPDATE " + tabla + " SET " + valor);
-            ResultSet rs = pst.executeQuery()) {
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-        //System.out.println("Tabla NO encontrado");
-
-    }
-
-    public static void insertValue(String tabla, String valores)
-    {
-        Connection con = ConnectionDAO.getInstance().getConnection();
-        try(PreparedStatement pst = con.prepareStatement("INSERT INTO public." + tabla + " VALUES (" + valores + ")");
-            ResultSet rs = pst.executeQuery()) {
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-        System.out.println("Tabla NO encontrado");
-    }
-
-    public static void deleteValue(String tabla, String cond)
-    {
-        Connection con = ConnectionDAO.getInstance().getConnection();
-        try(PreparedStatement pst = con.prepareStatement("DELETE FROM " + tabla + " WHERE " + cond);
-            ResultSet rs = pst.executeQuery()) {
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-        System.out.println("Tabla NO encontrado");
     }
 
 

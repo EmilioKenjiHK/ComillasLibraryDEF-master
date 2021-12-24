@@ -1,13 +1,14 @@
 package dtc.isw.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Administrador extends Usuario{
+public class Administrador extends Usuario implements Serializable {
     int idAdmin;
 
-    public Administrador(String username, String password, String correo, ArrayList<Reserva> sreservados, int idAdmin)
+    public Administrador(String username, String password, String correo, int puntos, int idAdmin)
     {
-        super(username,password,correo,sreservados);
+        super(username,password,correo,puntos);
         this.idAdmin = idAdmin;
     }
 

@@ -1,6 +1,8 @@
 package dtc.isw.domain;
 
-public class Planta {
+import java.io.Serializable;
+
+public class Planta implements Serializable {
     String nombre;
 
     public Planta(String nombre)

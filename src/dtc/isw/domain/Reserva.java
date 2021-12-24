@@ -1,6 +1,8 @@
 package dtc.isw.domain;
 
-public class Reserva {
+import java.io.Serializable;
+
+public class Reserva implements Serializable {
     int idreserva;
     String hi; // Hora inicial
     String hf; // Hora final
@@ -33,5 +35,10 @@ public class Reserva {
 
     public void setHf(String hf) {
         this.hf = hf;
+    }
+
+    public String toString()
+    {
+        return "ID reserva: " + this.getIdreserva() + " Hora Inicial: " + this.getHi() + " Hora Final: " + this.getHf();
     }
 }

@@ -29,6 +29,7 @@ public class Client {
         Logger.getRootLogger().info("Host: "+host+" port"+port);
         //Create a cliente class
         Client cliente=new Client(host, port);
+        HashMap<String,Object> h;
 
         //session.put("/getCustomer","");
 
@@ -46,27 +47,39 @@ public class Client {
                 }
                 break;
             */
-            case "/checkCustomerResponse":
-                System.out.println("\nSe ha comprobado.");
+            case "/loginUserEnd":
+                System.out.println("\nEntrada comprobada");
                 int res = (Integer) mensajeVuelta.getSession().get("Respuesta");
                 session.put("Respuesta",res);
                 break;
 
-            case "/getColumnInfoEnd":
-                HashMap<String,Object> h = (HashMap<String, Object>) mensajeVuelta.getSession();
-                session.put("Respuesta",h);
+            case "/getPerfilEnd":
+                h = (HashMap<String, Object>) mensajeVuelta.getSession();
+                session.put("Respuesta",h.get("u"));
+                System.out.println("Usuario obtenido");
                 break;
 
-            case "/updateColumnEnd":
+            case "/getInfoEnd":
+                h = (HashMap<String, Object>) mensajeVuelta.getSession();
+                session.put("Respuesta",h);
+                System.out.println("Informacion obtenida");
+                break;
+
+            case "/getIDReservaEnd":
+                int i = (Integer) mensajeVuelta.getSession().get("id");
+                session.put("Respuesta",i);
+                break;
+
+            case "/updateAsientoEnd":
                 System.out.println("Valor actualizado");
                 break;
 
-            case "/insertColumnEnd":
-                System.out.println("Nuevo valores insertados");
+            case "/insertReservaEnd":
+                System.out.println("Nueva Reserva guardada");
                 break;
 
-            case "/deleteValueEnd":
-                System.out.println("Valor eliminado");
+            case "/borrarReservaEnd":
+                System.out.println("Reserva eliminada");
                 break;
 
             default:

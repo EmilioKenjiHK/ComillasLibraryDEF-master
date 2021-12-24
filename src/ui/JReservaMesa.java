@@ -10,6 +10,9 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import dtc.isw.domain.*;
+
+
 /**
  * Displays the page where the user can choose a table for his reservation
  */
@@ -40,7 +43,7 @@ public class JReservaMesa extends JFrame {
      * Contructor of JReservaMesa class
      * Initializes variables and describe the page and its elements
      * @param usuario The current user
-     * @param valores Table with library and level for the reservation
+     * @param valores Table with library,plant and times for the reservation
      */
     public JReservaMesa(String usuario, ArrayList<String> valores)
     {
@@ -69,19 +72,17 @@ public class JReservaMesa extends JFrame {
 
         Client client = new Client();
         HashMap<String,Object> session = new HashMap<>();
-        session.put("table","listaasientos");
-        session.put("condicion","biblioteca ='" + valores.get(0) + "' AND planta = '" + valores.get(1) + "' AND ocupado = false");
-        session.put("columna", 3);
-        client.enviar("/getColumnInfo",session);
+        session.put("b",valores.get(0));
+        session.put("p",valores.get(1));
+        client.enviar("/getMesas",session);
         h = (HashMap<String,Object>) session.get("Respuesta");
         for(Integer i = 0; i< h.size();i++)
         {
-            String s = (String) h.get(i.toString());
-            if(!noRepeat.contains(s))
+            Mesa m = (Mesa) h.get(i.toString());
+            if(!noRepeat.contains(m.getNombre()))
             {
-                mesa.addItem(s);
-                noRepeat.add(s);
-                System.out.println(noRepeat.contains(h.get(i.toString())));
+                mesa.addItem(m.getNombre());
+                noRepeat.add(m.getNombre());
             }
         }
 
@@ -130,33 +131,28 @@ public class JReservaMesa extends JFrame {
                 }
                 else {
                     Client client = new Client();
-                    HashMap<String, Object> session;
+                    HashMap<String,Object> session = new HashMap<String,Object>();
 
-                    //actualizar tabla listaasientos
-                    session = new HashMap<String, Object>();
-                    session.put("tabla", "listaasientos");
-                    session.put("valor", "ocupado = true");
-                    session.put("condicion", "biblioteca = '" + valores.get(0) + "' AND planta = '" + valores.get(1) + "'" + " AND mesa = '" + mesa.getSelectedItem() + "'");
-                    client.enviar("/updateColumn", session);
+                    //dar un valor a idreserva
+                    session.put("id",0); // Valor defecto
+                    client.enviar("/getIDReserva",session);
+                    int idres = (Integer) session.get("Respuesta");
 
-                    session = new HashMap<String, Object>();
-                    session.put("tabla", "listaasientos");
-                    session.put("valor", "horain = '" + valores.get(2) + "'");
-                    session.put("condicion", "biblioteca = '" + valores.get(0) + "' AND planta = '" + valores.get(1) + "'" + " AND mesa = '" + mesa.getSelectedItem() + "'");
-                    client.enviar("/updateColumn", session);
+                    //actualizar tabla asientos
+                    session = new HashMap<String,Object>();
+                    session.put("b",valores.get(0));
+                    session.put("p",valores.get(1));
+                    session.put("m",mesa.getSelectedItem());
+                    session.put("id",idres);
+                    client.enviar("/updateAsiento",session);
 
-                    session = new HashMap<String, Object>();
-                    session.put("tabla", "listaasientos");
-                    session.put("valor", "horafin = '" + valores.get(3) + "'");
-                    session.put("condicion", "biblioteca = '" + valores.get(0) + "' AND planta = '" + valores.get(1) + "'" + " AND mesa = '" + mesa.getSelectedItem() + "'");
-                    client.enviar("/updateColumn", session);
-
-                    session = new HashMap<String, Object>();
-                    session.put("tabla", "listaasientos");
-                    session.put("valor", "username = '" + usuario + "'");
-                    session.put("condicion", "biblioteca = '" + valores.get(0) + "' AND planta = '" + valores.get(1) + "'" + " AND mesa = '" + mesa.getSelectedItem() + "'");
-                    client.enviar("/updateColumn", session);
-
+                    //crear Reserva
+                    Reserva r = new Reserva(idres,valores.get(2),valores.get(3));
+                    session = new HashMap<String,Object>();
+                    session.put("r",r);
+                    session.put("u",usuario);
+                    client.enviar("/insertReserva",session);
+                    JInfoBox.infoBox("Aviso", "Se ha completado la reserva.");
                     dispose();
                     new JOpciones(usuario);
                 }

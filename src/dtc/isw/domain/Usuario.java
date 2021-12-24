@@ -1,18 +1,19 @@
 package dtc.isw.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Usuario {
+public class Usuario implements Serializable {
     String username;
     String password;
     String correo;
-    ArrayList<Reserva> sreservados;
+    int puntos;
 
-    public Usuario(String username, String password, String correo, ArrayList<Reserva> sreservados) {
+    public Usuario(String username, String password, String correo, int puntos) {
         this.username = username;
         this.password = password;
         this.correo = correo;
-        this.sreservados = sreservados;
+        this.puntos = puntos;
     }
 
     public String getUsername() {
@@ -39,11 +40,11 @@ public class Usuario {
         this.correo = correo;
     }
 
-    public ArrayList<Reserva> getSreservados() {
-        return sreservados;
+    public int getPuntos() {
+        return puntos;
     }
 
-    public void setSreservados(ArrayList<Reserva> sreservados) {
-        this.sreservados = sreservados;
+    public void setPuntos(int puntos) {
+        this.puntos = puntos;
     }
 }

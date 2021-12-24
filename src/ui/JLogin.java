@@ -97,8 +97,8 @@ public class JLogin extends JFrame {
                 HashMap<String,Object> session = new HashMap<>();
                 String u = usuario0.getText();
                 String p = password0.getText();
-                Customer user = new Customer(u,p);
-                session.put("id",user);
+                session.put("u",u);
+                session.put("p",p);
                 client.enviar("/loginUser",session);
 
                 int resultado = (Integer) session.get("Respuesta");

@@ -36,7 +36,7 @@ public class JOpciones extends JFrame
 
         //Instanciar variables
         reservar = new JButton("Reserva un asiento");
-        cancelar = new JButton("Cancelar la reserva");
+        cancelar = new JButton("Cancelar una reserva");
         perfil = new JButton("Perfil");
         salir = new JButton("Logout");
 
@@ -78,14 +78,14 @@ public class JOpciones extends JFrame
         reservar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                dispose();
+                new JReservaInformacion(usuario);
+
                 Client client = new Client();
                 HashMap<String, Object> session = new HashMap<String,Object>();
-                session.put("table","listaasientos");
-                session.put("condicion","username = '" + usuario + "'");
-                session.put("columna",7);
-                client.enviar("/getColumnInfo",session);
-                //System.out.println(session.get("Respuesta"));
-                HashMap<String,Object> h = (HashMap<String,Object>) session.get("Respuesta");
+                session.put("u",usuario);
+                client.enviar("/getReservas",session);
+                HashMap<String,Object> h = (HashMap<String, Object>) session.get("Respuesta");
                 if(h.size() == 4) {
                     JInfoBox.infoBox("Error","Error: Ya ha hecho el maximo numero de reservas");
                 }
@@ -102,41 +102,15 @@ public class JOpciones extends JFrame
             public void actionPerformed(ActionEvent e) {
                 Client client = new Client();
                 HashMap<String, Object> session = new HashMap<String,Object>();
-                session.put("table","listaasientos");
-                session.put("condicion","username = '" + usuario + "'");
-                session.put("columna",7);
-                client.enviar("/getColumnInfo",session);
-                //System.out.println(session.get("Respuesta"));
-                HashMap<String,Object> h = (HashMap<String,Object>) session.get("Respuesta");
-                if(usuario.equals(h.get("0"))) { // Con comprobar que hay como minimo 1 reserva, sabemos que no es 0
-                    session = new HashMap<String,Object>();
-                    session.put("tabla","listaasientos");
-                    session.put("valor","ocupado = false");
-                    session.put("condicion","username = '" + usuario + "'");
-                    client.enviar("/updateColumn",session);
-
-                    session = new HashMap<String,Object>();
-                    session.put("tabla","listaasientos");
-                    session.put("valor","horain = null");
-                    session.put("condicion","username = '" + usuario + "'");
-                    client.enviar("/updateColumn",session);
-
-                    session = new HashMap<String,Object>();
-                    session.put("tabla","listaasientos");
-                    session.put("valor","horafin = null");
-                    session.put("condicion","username = '" + usuario + "'");
-                    client.enviar("/updateColumn",session);
-
-                    session = new HashMap<String,Object>();
-                    session.put("tabla","listaasientos");
-                    session.put("valor","username = null");
-                    session.put("condicion","username = '" + usuario + "'");
-                    client.enviar("/updateColumn",session);
-
-                    JInfoBox.infoBox("Aviso", "Se ha borrado la reserva.");
+                session.put("u",usuario);
+                client.enviar("/getReservas",session);
+                HashMap<String,Object> h = (HashMap<String, Object>) session.get("Respuesta");
+                if(h.size() == 0) {
+                    JInfoBox.infoBox("Error","Error: No tienes Reservas hechas");
                 }
                 else {
-                    JInfoBox.infoBox("Error","Error: No has hecho una reserva");
+                    dispose();
+                    new JBorrarReserva(usuario);
                 }
             }
         });

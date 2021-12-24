@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import dtc.isw.domain.*;
+
 /**
  * In this page, the user can specify the global information for his reservation
  */
@@ -25,6 +27,7 @@ public class JReservaInformacion extends JFrame {
     JComboBox horaIn;
     JComboBox horaFin;
     JButton buscar;
+    JButton grupo;
     JButton salir;
     // biblioteca
     JLabel b;
@@ -36,6 +39,9 @@ public class JReservaInformacion extends JFrame {
     JLabel hf;
     //introducir datos
     JLabel intro;
+
+    Client client = new Client();
+    HashMap<String,Object> session = new HashMap<>();
 
     // Hashmap donde pondremos el resultado de la request a la base de datos
     HashMap<String,Object> h = new HashMap<String,Object>();
@@ -64,6 +70,7 @@ public class JReservaInformacion extends JFrame {
         horaIn = new JComboBox();
         horaFin = new JComboBox();
         buscar = new JButton("Buscar Mesas");
+        grupo = new JButton("Reservar como Grupo");
         salir = new JButton("Volver a Opciones");
         b = new JLabel("Biblioteca:", SwingConstants.CENTER);
         p = new JLabel("Plantas Libres:", SwingConstants.CENTER);
@@ -108,8 +115,19 @@ public class JReservaInformacion extends JFrame {
         horaFin.addItem("");
 
         //biblioteca
-        biblioteca.addItem("Calle de Alberto Aguilera 25");
-        biblioteca.addItem("Otro");
+        client.enviar("/getBibliotecas",session);
+        h = (HashMap<String, Object>) session.get("Respuesta");
+        ArrayList<Object> noRepeat = new ArrayList<Object>();
+
+        for(Integer i=0;i<h.size();i++)
+        {
+            Biblioteca bb = (Biblioteca) h.get(i.toString());
+            if(!noRepeat.contains(bb.getNombre()))
+            {
+                biblioteca.addItem(bb.getNombre());
+                noRepeat.add(bb.getNombre());
+            }
+        }
 
         //planta
         //planta.addItem("3ª Planta");
@@ -133,22 +151,18 @@ public class JReservaInformacion extends JFrame {
                         break;
                 }
 
-                // Getting the list of sits from the database
-                Client client = new Client();
-                HashMap<String,Object> session = new HashMap<>();
-                session.put("table","listaasientos");
-                session.put("condicion","ocupado=false AND biblioteca='"+ biblioteca.getSelectedItem().toString()+"'");
-                session.put("columna", 2);
-                client.enviar("/getColumnInfo",session);
+                session = new HashMap<String,Object>();
+                session.put("b",biblioteca.getSelectedItem());
+                client.enviar("/getPlantas",session);
                 h = (HashMap<String,Object>) session.get("Respuesta");
+                ArrayList<Object> noRepeat = new ArrayList<Object>();
                 for(Integer i = 0; i< h.size();i++)
                 {
-                    String s = (String) h.get(i.toString());
-                    if(!noRepeat.contains(s))
+                    Planta pp = (Planta) h.get(i.toString());
+                    if(!noRepeat.contains(pp.getNombre()))
                     {
-                        planta.addItem(s);
-                        noRepeat.add(s);
-                        System.out.println(noRepeat.contains(h.get(i.toString())));
+                        planta.addItem(pp.getNombre());
+                        noRepeat.add(pp.getNombre());
                     }
                 }
             }
@@ -197,8 +211,6 @@ public class JReservaInformacion extends JFrame {
             }
         });
 
-        //Norte
-
         //Centro
         pnlCenter.setLayout(new GridLayout(4, 2, 0, 2));
         pnlCenter.add(b);
@@ -213,6 +225,7 @@ public class JReservaInformacion extends JFrame {
 
         //Sur
         pnlSouth.add(buscar);
+        pnlSouth.add(grupo);
         pnlSouth.add(salir);
         this.add(pnlSouth, BorderLayout.SOUTH);
 

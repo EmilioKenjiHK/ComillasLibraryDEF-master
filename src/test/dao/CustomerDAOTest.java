@@ -5,38 +5,44 @@ import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import dtc.isw.domain.Usuario;
+import dtc.isw.domain.Mesa;
+import dtc.isw.domain.Reserva;
 
 
 class CustomerDAOTest extends TestCase {
     private static CustomerDAO  dao = null;
 
     @Test
-    public void checkCustomer() {
-        String tabla = "listausuarios";
-        String username = "Admin"; // Admin en la tabla --> return true
-    int columna = 1;
+    public void getPerfil() {
+        String username = "Admin";
+        Usuario res = dao.getPerfil(username);
 
-        assertEquals(true, dao.checkCustomer(tabla,username,columna));
+        assertEquals("Admin", res.getUsername());
+        assertEquals("password",res.getPassword());
+        assertEquals("default@comillas.edu",res.getCorreo());
+        assertEquals(0,res.getPuntos());
     }
 
     @Test
-    public void checkCustomerCond() {
-        String tabla = "listausuarios";
-        String cond = "username = 'Admin'";
-        int columna = 2;
-        String password = "2"; // Contrasenya correcta: password (2 es de otro usuario) --> return false
+    public void getMesas() {
+        String biblioteca = "test";
+        String planta = "test";
+        HashMap<String,Object> res = dao.getMesas(biblioteca,planta);
+        Mesa m = (Mesa) res.get("0");
 
-        assertEquals(false, dao.checkCustomerCond(tabla,password,cond,columna));
+        assertEquals("1A",m.getNombre());
     }
 
+
     @Test
-    public void getColumnCond() {
-        String tabla = "reservas";
-        String condicion = "username = 'Admin'"; // Valor por defecto --> ideal para comprobar la funcion
-        int columna = 2;
+    public void getReservas(){
+        String username = "Admin";
+        HashMap<String,Object> res = dao.getReservas(username);
+        Reserva r = (Reserva) res.get("0");
 
-        HashMap<String,Object> res = dao.getColumnCond(tabla,condicion,columna);
-
-        assertEquals("13:00",res.get("0"));
+        assertEquals(0,r.getIdreserva());
+        assertEquals("08:00",r.getHi());
+        assertEquals("08:30",r.getHf());
     }
 }

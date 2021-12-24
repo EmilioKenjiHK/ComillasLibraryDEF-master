@@ -1,6 +1,8 @@
 package dtc.isw.domain;
 
-public class Biblioteca {
+import java.io.Serializable;
+
+public class Biblioteca implements Serializable {
     String nombre;
 
     public Biblioteca(String nombre)

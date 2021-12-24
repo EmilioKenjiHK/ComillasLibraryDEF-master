@@ -1,6 +1,8 @@
 package dtc.isw.domain;
 
-public class Mesa {
+import java.io.Serializable;
+
+public class Mesa implements Serializable {
     String nombre;
 
     public Mesa(String nombre)

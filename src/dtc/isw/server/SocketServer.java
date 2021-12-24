@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import dtc.isw.controler.CustomerControler;
-import dtc.isw.domain.Customer;
+import dtc.isw.domain.*;
 import dtc.isw.message.Message;
 
 public class SocketServer extends Thread {
@@ -37,34 +37,34 @@ public class SocketServer extends Thread {
             Message mensajeIn= (Message)objectInputStream.readObject();
             //Object to return informations
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);
-            Message mensajeOut=new Message();
+            Message mensajeOut = new Message();
+            CustomerControler cc = new CustomerControler();
+            HashMap<String,Object> session = new HashMap<String,Object>();
+            String biblioteca;
+            String planta;
+            String mesa;
+            int id;
+
             switch (mensajeIn.getContext()) {
                 case "/getCustomer":
                     CustomerControler customerControler=new CustomerControler();
                     ArrayList<Customer> lista=new ArrayList<Customer>();
                     customerControler.getCustomer(lista);
                     mensajeOut.setContext("/getCustomerResponse");
-                    HashMap<String,Object> session=new HashMap<String, Object>();
+                    session=new HashMap<String, Object>();
                     session.put("Customer",lista);
                     mensajeOut.setSession(session);
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
                 case "/loginUser":
-                    CustomerControler customerControlerlogin = new CustomerControler();
-                    String user = ((Customer) mensajeIn.getSession().get("id")).getUser();
-                    String password = ((Customer) mensajeIn.getSession().get("id")).getPassword();
-                    boolean u = customerControlerlogin.checkCustomer("listausuarios", user,1);
-                    boolean p;
-                    if(u) {
-                        p = customerControlerlogin.checkCustomerCond("listausuarios", password,"username = '" + user + "'", 2);
-                    }
-                    else{
-                        p = false;
-                    }
-                    if(u && p)
+                    String user = (String) mensajeIn.getSession().get("u");
+                    String password = (String) mensajeIn.getSession().get("p");
+                    cc = new CustomerControler();
+                    boolean b = cc.checkLogin(user,password);
+                    if(b)
                     {
-                        mensajeOut.setContext("/checkCustomerResponse");
+                        mensajeOut.setContext("/loginUserEnd");
                         session = new HashMap<String,Object>();
                         session.put("Respuesta",1);
                         mensajeOut.setSession(session);
@@ -73,7 +73,7 @@ public class SocketServer extends Thread {
                     }
                     else
                     {
-                        mensajeOut.setContext("/checkCustomerResponse");
+                        mensajeOut.setContext("/loginUserEnd");
                         session = new HashMap<String,Object>();
                         session.put("Respuesta",0);
                         mensajeOut.setSession(session);
@@ -81,64 +81,100 @@ public class SocketServer extends Thread {
                         break;
                     }
 
-                case "/getColumnInfo":
-                    CustomerControler customerControlerInfo = new CustomerControler();
-                    String tabla = (String) mensajeIn.getSession().get("table");
-                    String condicion = (String) mensajeIn.getSession().get("condicion");
-                    int columna = (Integer) mensajeIn.getSession().get("columna");
-
-                    if(!condicion.equals(""))
-                    {
-                        session = customerControlerInfo.getColumnCond(tabla,condicion,columna);
-                    }
-                    else
-                    {
-                        session = customerControlerInfo.getColumn(tabla,columna);
-                    }
-                    mensajeOut.setContext("/getColumnInfoEnd");
+                case "/getPerfil":
+                    String username = ((String) mensajeIn.getSession().get("id"));
+                    Usuario usuario = cc.getPerfil(username);
+                    session = new HashMap<String,Object>();
+                    session.put("u",usuario);
+                    mensajeOut.setContext("/getPerfilEnd");
                     mensajeOut.setSession(session);
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
-                case "/updateColumn":
-                    customerControlerInfo = new CustomerControler();
-                    tabla = (String) mensajeIn.getSession().get("tabla");
-                    String valor = (String) mensajeIn.getSession().get("valor");
-                    condicion = (String) mensajeIn.getSession().get("condicion");
-
-                    if(!condicion.equals(""))
-                    {
-                        customerControlerInfo.updateColumnCond(tabla,valor,condicion);
-                    }
-                    else
-                    {
-                        customerControlerInfo.updateColumn(tabla,valor);
-                    }
-                    mensajeOut.setContext("/updateColumnEnd");
+                case "/getBibliotecas":
+                    cc = new CustomerControler();
+                    session = cc.getBibliotecas();
+                    mensajeOut.setContext("/getInfoEnd");
+                    mensajeOut.setSession(session);
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
-                case "/insertColumn":
-                    customerControlerInfo = new CustomerControler();
-                    tabla = (String) mensajeIn.getSession().get("tabla");
-                    String valores = (String) mensajeIn.getSession().get("valor");
-                    customerControlerInfo.insertColumn(tabla,valores);
-                    mensajeOut.setContext("/updateColumnEnd");
+                case "/getPlantas":
+                    biblioteca = (String) mensajeIn.getSession().get("b");
+                    cc = new CustomerControler();
+                    session = cc.getPlantas(biblioteca);
+                    mensajeOut.setContext("/getInfoEnd");
+                    mensajeOut.setSession(session);
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
-                case "/deleteValue":
-                    customerControlerInfo = new CustomerControler();
-                    tabla = (String) mensajeIn.getSession().get("tabla");
-                    condicion = (String) mensajeIn.getSession().get("condicion");
-                    customerControlerInfo.deleteValue(tabla,condicion);
-                    mensajeOut.setContext("/deleteValueEnd");
+                case "/getMesas":
+                    biblioteca = (String) mensajeIn.getSession().get("b");
+                    planta = (String) mensajeIn.getSession().get("p");
+                    cc = new CustomerControler();
+                    session = cc.getMesas(biblioteca,planta);
+                    mensajeOut.setContext("/getInfoEnd");
+                    mensajeOut.setSession(session);
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
-                default:
-                    System.out.println("\nParámetro no encontrado");
+                case "/getIDReserva":
+                    int inicial = (Integer) mensajeIn.getSession().get("id");
+                    cc = new CustomerControler();
+                    int fin = cc.getID(inicial);
+                    session = new HashMap<String,Object>();
+                    session.put("id",fin);
+                    mensajeOut.setContext("/getIDReservaEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
                     break;
+
+
+                case "/updateAsiento":
+                    biblioteca = (String) mensajeIn.getSession().get("b");
+                    planta = (String) mensajeIn.getSession().get("p");
+                    mesa = (String) mensajeIn.getSession().get("m");
+                    id = (Integer) mensajeIn.getSession().get("id");
+                    cc = new CustomerControler();
+                    cc.updateAsiento(biblioteca,planta,mesa,id);
+                    mensajeOut.setContext("/updateAsientoEnd");
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/insertReserva":
+                    Reserva r = (Reserva) mensajeIn.getSession().get("r");
+                    user = (String) mensajeIn.getSession().get("u");
+                    cc = new CustomerControler();
+                    cc.insertReserva(r,user);
+                    mensajeOut.setContext("/insertReservaEnd");
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/getReservas":
+                    user = (String) mensajeIn.getSession().get("u");
+                    cc = new CustomerControler();
+                    session = cc.getReservas(user);
+                    mensajeOut.setContext("/getInfoEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/borrarReserva":
+                    id = (Integer) mensajeIn.getSession().get("id");
+                    cc = new CustomerControler();
+                    cc.deleteReserva(id);
+                    mensajeOut.setContext("/borrarReservaEnd");
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/liberarAsiento":
+                    id = (Integer) mensajeIn.getSession().get("id");
+                    cc = new CustomerControler();
+                    cc.liberarAsiento(id);
+                    mensajeOut.setContext("/updateAsientoEnd");
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
             }
 
             //Lógica del controlador
@@ -168,6 +204,7 @@ public class SocketServer extends Thread {
 			*/
 
         } catch (IOException ex) {
+            System.out.println(ex);
             System.out.println("Unable to get streams from client");
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
