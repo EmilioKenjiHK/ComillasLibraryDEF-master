@@ -146,6 +146,28 @@ public class CustomerDAO {
         return res;
     }
 
+    public static boolean checkUsuario(String user)
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        try (PreparedStatement pst = con.prepareStatement("SELECT username FROM usuarios");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                if (user.equals(rs.getString(1))) {
+                    System.out.println("Encontrado");
+                    return true;
+                }
+                /*else {
+                    System.out.println("NO encontrado");
+                    return false;
+                }*/
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        System.out.println("NO encontrado");
+        return false;
+    }
+
     public static int getID(int inicial)
     {
         Connection con=ConnectionDAO.getInstance().getConnection();

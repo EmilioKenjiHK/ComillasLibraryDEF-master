@@ -39,6 +39,12 @@ public class CustomerControler {
         return h;
     }
 
+    public static boolean checkUsuario(String user)
+    {
+        boolean b = CustomerDAO.checkUsuario(user);
+        return b;
+    }
+
     public static int getID(int inicial)
     {
         int i = CustomerDAO.getID(inicial);

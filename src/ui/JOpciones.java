@@ -78,9 +78,6 @@ public class JOpciones extends JFrame
         reservar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                new JReservaInformacion(usuario);
-
                 Client client = new Client();
                 HashMap<String, Object> session = new HashMap<String,Object>();
                 session.put("u",usuario);
