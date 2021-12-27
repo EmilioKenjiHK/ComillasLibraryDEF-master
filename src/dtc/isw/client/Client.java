@@ -65,6 +65,12 @@ public class Client {
                 System.out.println("Informacion obtenida");
                 break;
 
+            case "/checkUsuarioEnd":
+                System.out.println("\nEntrada comprobada");
+                boolean b = (Boolean) mensajeVuelta.getSession().get("Respuesta");
+                session.put("Respuesta",b);
+                break;
+
             case "/getIDReservaEnd":
                 int i = (Integer) mensajeVuelta.getSession().get("id");
                 session.put("Respuesta",i);
@@ -91,7 +97,9 @@ public class Client {
         //System.out.println("3.- En Main.- El valor devuelto es: "+((String)mensajeVuelta.getSession().get("Nombre")));
     }
 
+
     public Client(){}
+
     public Client(String host, int port) {
         this.host=host;
         this.port=port;
@@ -112,7 +120,8 @@ public class Client {
                 echoSocket = new Socket(host, port);
 
                 in = echoSocket.getInputStream();
-                out = echoSocket.getOutputStream();
+
+               out = echoSocket.getOutputStream();
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);
 
                 //Create the object to send
@@ -133,7 +142,8 @@ public class Client {
             } catch (IOException e) {
                 System.err.println("Unable to get streams from server");
                 System.exit(1);
-            }
+
+           }
 
             /** Closing all the resources */
             out.close();

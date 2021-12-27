@@ -118,6 +118,18 @@ public class SocketServer extends Thread {
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
+                case "/checkUsuario":
+                    user = (String) mensajeIn.getSession().get("u");
+                    cc = new CustomerControler();
+                    b = cc.checkUsuario(user);
+                    session = new HashMap<String,Object>();
+                    session.put("Respuesta",b);
+                    mensajeOut.setContext("/checkUsuarioEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+
                 case "/getIDReserva":
                     int inicial = (Integer) mensajeIn.getSession().get("id");
                     cc = new CustomerControler();
@@ -128,7 +140,6 @@ public class SocketServer extends Thread {
                     mensajeOut.setSession(session);
                     objectOutputStream.writeObject(mensajeOut);
                     break;
-
 
                 case "/updateAsiento":
                     biblioteca = (String) mensajeIn.getSession().get("b");

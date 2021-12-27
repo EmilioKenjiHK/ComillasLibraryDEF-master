@@ -247,7 +247,6 @@ public class JReservaInformacion extends JFrame {
                     JInfoBox.infoBox("Error","Error: Debe rellenar toda la informacion");
                 }
                 else {
-
                     dispose();
                     ArrayList<String> valores = new ArrayList<String>();
                     valores.add((String) biblioteca.getSelectedItem());
@@ -255,6 +254,26 @@ public class JReservaInformacion extends JFrame {
                     valores.add((String) horaIn.getSelectedItem());
                     valores.add((String) horaFin.getSelectedItem());
                     new JReservaMesa(usuario, valores);
+                }
+            }
+        });
+
+        grupo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(biblioteca.getSelectedItem().equals("") || planta.getSelectedItem().equals("") || horaIn.getSelectedItem().equals("") || horaFin.getSelectedItem().equals("") )
+                {
+                    JInfoBox.infoBox("Error","Error: Debe rellenar toda la informacion");
+                }
+                else {
+                    dispose();
+                    ArrayList<String> valores = new ArrayList<String>();
+                    valores.add((String) biblioteca.getSelectedItem());
+                    valores.add((String) planta.getSelectedItem());
+                    valores.add((String) horaIn.getSelectedItem());
+                    valores.add((String) horaFin.getSelectedItem());
+                    new JReservaGrupo(usuario, valores);
                 }
             }
         });
