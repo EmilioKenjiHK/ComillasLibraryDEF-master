@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import dtc.isw.domain.*;
+import ui.Tienda;
 
 public class CustomerDAO {
 
-
+    static Connection con=ConnectionDAO.getInstance().getConnection();
 
     public static void getClientes(ArrayList<Customer> lista) {
-        Connection con=ConnectionDAO.getInstance().getConnection();
+
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM prueba");
              ResultSet rs = pst.executeQuery()) {
 
@@ -43,7 +44,6 @@ public class CustomerDAO {
     }
 
     public static boolean checkLogin(String user, String password) {
-        Connection con = ConnectionDAO.getInstance().getConnection();
         try (PreparedStatement pst = con.prepareStatement("SELECT username,password FROM usuarios");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
@@ -64,7 +64,6 @@ public class CustomerDAO {
     }
 
     public static Usuario getPerfil(String username) {
-        Connection con = ConnectionDAO.getInstance().getConnection();
         Usuario usuario = new Usuario("","","",0);
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM usuarios WHERE username = '" + username + "'");
              ResultSet rs = pst.executeQuery()) {
@@ -82,7 +81,7 @@ public class CustomerDAO {
 
     public static HashMap<String,Object> getBibliotecas()
     {
-        Connection con = ConnectionDAO.getInstance().getConnection();
+
         ArrayList<Biblioteca> a = new ArrayList<Biblioteca>();
         HashMap<String,Object> res = new HashMap<String,Object>();
         Integer i = 0;
@@ -104,7 +103,7 @@ public class CustomerDAO {
 
     public static HashMap<String,Object> getPlantas(String biblioteca)
     {
-        Connection con = ConnectionDAO.getInstance().getConnection();
+
         ArrayList<Planta> a = new ArrayList<Planta>();
         HashMap<String,Object> res = new HashMap<String,Object>();
         Integer i = 0;
@@ -126,7 +125,7 @@ public class CustomerDAO {
 
     public static HashMap<String,Object> getMesas(String biblioteca,String planta)
     {
-        Connection con = ConnectionDAO.getInstance().getConnection();
+
         ArrayList<Mesa> a = new ArrayList<Mesa>();
         HashMap<String,Object> res = new HashMap<String,Object>();
         Integer i = 0;
@@ -148,7 +147,7 @@ public class CustomerDAO {
 
     public static int getID(int inicial)
     {
-        Connection con=ConnectionDAO.getInstance().getConnection();
+
         int fin = inicial+1;
         try (PreparedStatement pst = con.prepareStatement("SELECT id FROM reservas");
              ResultSet rs = pst.executeQuery()) {
@@ -169,7 +168,7 @@ public class CustomerDAO {
 
     public static void updateAsiento(String biblioteca,String planta, String mesa, int id) // SET ID (HOW TO PUT MULTIPLE SETS
     {
-        Connection con = ConnectionDAO.getInstance().getConnection();
+
         String condicion = "biblioteca = '" + biblioteca + "' AND planta = '" + planta + "' AND mesa = '" + mesa + "'";
         try (PreparedStatement pst = con.prepareStatement("UPDATE asientos SET ocupado='true', idreserva = '" + id + "' WHERE " + condicion);
              ResultSet rs = pst.executeQuery()) {
@@ -181,7 +180,7 @@ public class CustomerDAO {
 
     public static void insertReserva(Reserva reserva,String username)
     {
-        Connection con = ConnectionDAO.getInstance().getConnection();
+
         String valor = "'" + reserva.getIdreserva() + "','" + reserva.getHi() + "','" + reserva.getHf() + "','" + username + "'";
         try(PreparedStatement pst = con.prepareStatement("INSERT INTO reservas VALUES (" + valor + ")");
             ResultSet rs = pst.executeQuery()) {
@@ -192,7 +191,7 @@ public class CustomerDAO {
 
     public static HashMap<String,Object> getReservas(String username)
     {
-        Connection con = ConnectionDAO.getInstance().getConnection();
+
         ArrayList<Reserva> a = new ArrayList<Reserva>();
         HashMap<String,Object> res = new HashMap<String,Object>();
         Integer i = 0;
@@ -214,7 +213,7 @@ public class CustomerDAO {
 
     public static void deleteReserva(int id) //id de la Reserva
     {
-        Connection con = ConnectionDAO.getInstance().getConnection();
+
         try(PreparedStatement pst = con.prepareStatement("DELETE FROM reservas WHERE id = '" + id + "'");
             ResultSet rs = pst.executeQuery()) {
         } catch (SQLException ex) {
@@ -224,7 +223,6 @@ public class CustomerDAO {
 
     public static void liberarAsiento(int id)
     {
-        Connection con = ConnectionDAO.getInstance().getConnection();
         try (PreparedStatement pst = con.prepareStatement("UPDATE asientos SET ocupado='false', idreserva = null WHERE idreserva = '" + id + "'");
              ResultSet rs = pst.executeQuery()) {
 
@@ -233,5 +231,16 @@ public class CustomerDAO {
         }
     }
 
+    public static Tienda getTienda(String username) {
 
+        try {
+            PreparedStatement preparedStatement = con.prepareStatement("SELECT usuarios.username, puntos FROM tienda JOIN usuarios ON tienda.username = usuarios.username WHERE usuarios.username = '" + username + "'");
+            ResultSet rs = preparedStatement.executeQuery();
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+
+    }
 }
