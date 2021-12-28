@@ -76,4 +76,8 @@ public class CustomerControler {
     {
         CustomerDAO.liberarAsiento(id);
     }
+
+    public static ArrayList<String> getCompras(String user) {
+        return CustomerDAO.getCompras(user);
+    }
 }

@@ -186,6 +186,13 @@ public class SocketServer extends Thread {
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
+                case "/getCompras":
+                    user = (String) mensajeIn.getSession().get("u");
+                    cc = new CustomerControler();
+                    ArrayList<String> result = new ArrayList<>();
+
+
+
             }
 
             //Lógica del controlador

@@ -253,16 +253,24 @@ public class CustomerDAO {
         }
     }
 
-    public static Tienda getTienda(String username) {
+    public static ArrayList<String> getCompras(String username) {
+        ArrayList<String> result = new ArrayList<>();
 
         try {
-            PreparedStatement preparedStatement = con.prepareStatement("SELECT usuarios.username, puntos FROM tienda JOIN usuarios ON tienda.username = usuarios.username WHERE usuarios.username = '" + username + "'");
+            PreparedStatement preparedStatement =
+                    con.prepareStatement("SELECT * FROM tienda JOIN usuarios ON tienda.username = usuarios.username WHERE usuarios.username = '" + username + "'");
             ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                result.add(rs.getString(3));
+
+            }
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
+        return result;
 
     }
+
 }

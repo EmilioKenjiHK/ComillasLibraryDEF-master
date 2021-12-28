@@ -31,6 +31,12 @@ public class Tienda extends JFrame{
         String mail = u.getCorreo();
         String p = Integer.toString(u.getPuntos());
         ArrayList<String> a = new ArrayList<String>(Arrays.asList(name,password,mail,p));
+
+        System.out.println("LIST USUARIOS " + u);
+    }
+
+    public static void main(String[] args) {
+        new Tienda("default");
     }
 
 

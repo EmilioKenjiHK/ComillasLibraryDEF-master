@@ -17,6 +17,7 @@ import dtc.isw.domain.Usuario;
 public class JPerfil extends JFrame {
     JButton modificar;
     JButton volver;
+    JButton tienda;
     int numVars = 4;
     JLabel[] labels = new JLabel[numVars];
     JLabel[] variables = new JLabel[numVars];
@@ -61,13 +62,6 @@ public class JPerfil extends JFrame {
         // Make the requests to get all the columns we want from the database
         for (int i = 0; i < numVars; ++i) {
             String respuestaUsername = a.get(i);
-            /*
-            String formatted_resp = respuestaUsername.substring(respuestaUsername.indexOf("="), respuestaUsername.indexOf('}'));
-
-            if (!formatted_resp.equals("{")){
-                listVars.add(formatted_resp);
-            }
-            */
             listVars.add(respuestaUsername);
 
         }
@@ -114,10 +108,23 @@ public class JPerfil extends JFrame {
                 new JOpciones(usuario);
             }
         });
+
+        tienda = new JButton("Tienda");
+
+        tienda.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                dispose();
+                new Tienda(usuario);
+
+            }
+        });
+
         JLabel titlePage = new JLabel("Perfil de " + usuario, SwingConstants.CENTER);
         title.add(titlePage);
         title.setBackground(Color.cyan);
         title.add(volver);
+        title.add(tienda);
 
         JPanel pnlSouth = new JPanel();
         pnlSouth.setLayout(new GridLayout(2, 5));
@@ -126,31 +133,6 @@ public class JPerfil extends JFrame {
         pnlSouth.add(new JLabel("Mesa:"));
         pnlSouth.add(new JLabel("Hora Inicial:"));
         pnlSouth.add(new JLabel("Hora Final:"));
-        /*
-        for (int i = 1; i <= 3 ; ++i) {
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("table", "listaasientos");
-            map.put("condicion", "username='" + usuario + "'");
-            map.put("columna", i);
-
-            cl.enviar("/getColumnInfo", map);
-            HashMap<String,Object> h = (HashMap<String, Object>) map.get("Respuesta");
-            String s = (String) h.get("0");
-            pnlSouth.add(new JLabel(s));
-        }
-
-        for (int i = 2; i <= 3 ; ++i) {
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("table", "reservas");
-            map.put("condicion", "username='" + usuario + "'");
-            map.put("columna", i);
-
-            cl.enviar("/getColumnInfo", map);
-            HashMap<String,Object> h = (HashMap<String, Object>) map.get("Respuesta");
-            String s = (String) h.get("0");
-            pnlSouth.add(new JLabel(s));
-        }
-         */
 
         this.pack();
         getContentPane().add(title, BorderLayout.NORTH);
