@@ -99,6 +99,12 @@ public class SocketServer extends Thread {
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
+                case "/getCompras":
+                    user = (String) mensajeIn.getSession().get("u");
+                    cc = new CustomerControler();
+                    ArrayList<String> result = new ArrayList<>();
+                    break;
+
                 case "/getBibliotecas":
                     cc = new CustomerControler();
                     session = cc.getBibliotecas();
@@ -219,10 +225,13 @@ public class SocketServer extends Thread {
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
-                case "/getCompras":
+                case "/setSancion":
                     user = (String) mensajeIn.getSession().get("u");
+                    Sancion sancion = (Sancion) mensajeIn.getSession().get("s");
                     cc = new CustomerControler();
-                    ArrayList<String> result = new ArrayList<>();
+                    cc.setSancion(user,sancion);
+                    mensajeOut.setContext("/setSancionEnd");
+                    objectOutputStream.writeObject(mensajeOut);
                     break;
 
 

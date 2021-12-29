@@ -84,7 +84,7 @@ public class JAdminMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                new JAdminSancion();
+                new JAdminSancion(administrador);
             }
         });
         

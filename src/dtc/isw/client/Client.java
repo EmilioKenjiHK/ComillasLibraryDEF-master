@@ -88,6 +88,10 @@ public class Client {
                 System.out.println("Reserva eliminada");
                 break;
 
+            case "/setSancionEnd":
+                System.out.println("Sancion impuesta");
+                break;
+
             default:
                 Logger.getRootLogger().info("Option not found");
                 System.out.println("\nError a la vuelta");

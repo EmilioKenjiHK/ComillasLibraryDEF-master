@@ -15,7 +15,7 @@ import dtc.isw.domain.Usuario;
  * Displays the user's profile
  */
 public class JPerfil extends JFrame {
-    JButton modificar;
+    JButton reservas;
     JButton volver;
     JButton tienda;
     int numVars = 4;
@@ -98,6 +98,14 @@ public class JPerfil extends JFrame {
         // Call the method that does all the layout work
         JPanel form = createForm(labels, variables,10,10,100,20);
 
+        reservas = new JButton("Mirar las Reservas");
+
+        reservas.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new JPerfilReservas(usuario);
+            }
+        });
 
         volver = new JButton("Volver atrás");
 
@@ -120,24 +128,17 @@ public class JPerfil extends JFrame {
             }
         });
 
+
         JLabel titlePage = new JLabel("Perfil de " + usuario, SwingConstants.CENTER);
         title.add(titlePage);
         title.setBackground(Color.cyan);
+        title.add(reservas);
         title.add(volver);
         title.add(tienda);
-
-        JPanel pnlSouth = new JPanel();
-        pnlSouth.setLayout(new GridLayout(2, 5));
-        pnlSouth.add(new JLabel("Biblioteca:"));
-        pnlSouth.add(new JLabel("Planta:"));
-        pnlSouth.add(new JLabel("Mesa:"));
-        pnlSouth.add(new JLabel("Hora Inicial:"));
-        pnlSouth.add(new JLabel("Hora Final:"));
 
         this.pack();
         getContentPane().add(title, BorderLayout.NORTH);
         getContentPane().add(form, BorderLayout.WEST);
-        getContentPane().add(pnlSouth,BorderLayout.SOUTH);
 
         //Window
         this.setSize(MAXWIDTH,MAXHEIGHT);

@@ -111,7 +111,6 @@ public class CustomerDAO {
 
             while (rs.next()) {
                 result.add(rs.getString(3));
-
             }
         }
         catch (SQLException e) {
@@ -365,6 +364,17 @@ public class CustomerDAO {
             System.out.println(ex.getMessage());
         }
         return res;
+    }
+
+    public static void setSancion(String usuario, Sancion sancion)
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        String valor = "'" + usuario + "','" + sancion.getRazon() + "','" + sancion.getLimite() + "'";
+        try(PreparedStatement pst = con.prepareStatement("INSERT INTO sanciones VALUES (" + valor + ")");
+            ResultSet rs = pst.executeQuery()) {
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
 

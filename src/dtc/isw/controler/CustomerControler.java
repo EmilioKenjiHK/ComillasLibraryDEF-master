@@ -103,4 +103,9 @@ public class CustomerControler {
         HashMap<String,Object> h = CustomerDAO.infoReservas();
         return h;
     }
+    public static void setSancion(String usuario, Sancion sancion)
+    {
+        CustomerDAO.setSancion(usuario,sancion);
+    }
+
 }
