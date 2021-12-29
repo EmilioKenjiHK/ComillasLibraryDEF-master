@@ -103,9 +103,14 @@ public class JLogin extends JFrame {
 
                 int resultado = (Integer) session.get("Respuesta");
                 //System.out.println(resultado);
-                if(resultado == 1) // Ningun problema
+                if(resultado == 1) // Usuario
                 {
                     new JOpciones(u);
+                    dispose();
+                }
+                else if(resultado == 2) // Administrador
+                {
+                    new JAdminMenu(u);
                     dispose();
                 }
                 else //Username/Password incorrecto

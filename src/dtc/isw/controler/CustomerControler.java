@@ -16,9 +16,18 @@ public class CustomerControler {
         return b;
     }
 
+    public static boolean checkAdmin(String user) {
+        boolean b = CustomerDAO.checkAdmin(user);
+        return b;
+    }
+
     public Usuario getPerfil(String username) {
         Usuario u = CustomerDAO.getPerfil(username);
         return u;
+    }
+
+    public static ArrayList<String> getCompras(String user) {
+        return CustomerDAO.getCompras(user);
     }
 
     public static HashMap<String,Object> getBibliotecas()
@@ -75,5 +84,23 @@ public class CustomerControler {
     public static void liberarAsiento(int id)
     {
         CustomerDAO.liberarAsiento(id);
+    }
+
+    public static HashMap<String,Object> infoBibliotecas()
+    {
+        HashMap<String,Object> h = CustomerDAO.infoBibliotecas();
+        return h;
+    }
+
+    public static HashMap<String,Object> infoPlantas(String biblioteca)
+    {
+        HashMap<String,Object> h = CustomerDAO.infoPlantas(biblioteca);
+        return h;
+    }
+
+    public static HashMap<String,Object> infoReservas()
+    {
+        HashMap<String,Object> h = CustomerDAO.infoReservas();
+        return h;
     }
 }

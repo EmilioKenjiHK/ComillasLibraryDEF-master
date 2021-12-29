@@ -63,6 +63,27 @@ public class CustomerDAO {
         return false;
     }
 
+    public static boolean checkAdmin(String user) {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        try (PreparedStatement pst = con.prepareStatement("SELECT administrador FROM usuarios WHERE username = '" + user + "'");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                if (rs.getString(1).equals("true")) {
+                    System.out.println("Admin");
+                    return true;
+                }
+                /*else {
+                    System.out.println("NO admin");
+                    return false;
+                }*/
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        System.out.println("NO admin");
+        return false;
+    }
+
     public static Usuario getPerfil(String username) {
         Connection con = ConnectionDAO.getInstance().getConnection();
         Usuario usuario = new Usuario("","","",0);
@@ -78,6 +99,26 @@ public class CustomerDAO {
             System.out.println(ex.getMessage());
         }
         return usuario;
+    }
+
+    public static ArrayList<String> getCompras(String username) {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        ArrayList<String> result = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = con.prepareStatement("SELECT * FROM tienda JOIN usuarios ON tienda.username = usuarios.username WHERE usuarios.username = '" + username + "'");
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                result.add(rs.getString(3));
+
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return result;
+
     }
 
     public static HashMap<String,Object> getBibliotecas()
@@ -253,6 +294,77 @@ public class CustomerDAO {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
+    }
+
+    public static HashMap<String,Object> infoBibliotecas()
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        ArrayList<Biblioteca> a = new ArrayList<Biblioteca>();
+        HashMap<String,Object> res = new HashMap<String,Object>();
+        Integer i = 0;
+        try (PreparedStatement pst = con.prepareStatement("SELECT DISTINCT biblioteca FROM asientos ORDER BY biblioteca ASC;");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                a.add(i,new Biblioteca(rs.getString(1)));
+                i +=1 ;
+            }
+            for(Integer j = 0; j<a.size();j++)
+            {
+                res.put(j.toString(),a.get(j));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return res;
+    }
+
+    public static HashMap<String,Object> infoPlantas(String biblioteca)
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        ArrayList<Planta> a = new ArrayList<Planta>();
+        HashMap<String,Object> res = new HashMap<String,Object>();
+        Integer i = 0;
+        try (PreparedStatement pst = con.prepareStatement("SELECT DISTINCT planta FROM asientos WHERE ocupado = false AND biblioteca = '" + biblioteca + "' ORDER BY planta ASC");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                a.add(i,new Planta(rs.getString(1)));
+                i +=1 ;
+            }
+            for(Integer j = 0; j<a.size();j++)
+            {
+                res.put(j.toString(),a.get(j));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return res;
+    }
+
+    public static HashMap<String,Object> infoReservas()
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        ArrayList<Reserva> a = new ArrayList<Reserva>();
+        ArrayList<String> b = new ArrayList<String>();
+        HashMap<String,Object> res = new HashMap<String,Object>();
+        Integer i = 0;
+        try (PreparedStatement pst = con.prepareStatement("SELECT * from reservas ORDER BY username ASC");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+
+                a.add(i,new Reserva(Integer.parseInt(rs.getString(1)),rs.getString(2),rs.getString(3)));
+                b.add(i+1,rs.getString(4));
+                i +=2 ;
+            }
+            for(Integer j = 0; j<a.size();j+=2)
+            {
+                res.put(j.toString(),a.get(j));
+                Integer k = j+1;
+                res.put(k.toString(),b.get(k));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return res;
     }
 
 

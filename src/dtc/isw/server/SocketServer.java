@@ -64,9 +64,17 @@ public class SocketServer extends Thread {
                     boolean b = cc.checkLogin(user,password);
                     if(b)
                     {
+                        Boolean l = cc.checkAdmin(user);
+                        if(l)
+                        {
+                            session = new HashMap<String,Object>();
+                            session.put("Respuesta",2);
+                        }
+                        else{
+                            session = new HashMap<String,Object>();
+                            session.put("Respuesta",1);
+                        }
                         mensajeOut.setContext("/loginUserEnd");
-                        session = new HashMap<String,Object>();
-                        session.put("Respuesta",1);
                         mensajeOut.setSession(session);
                         objectOutputStream.writeObject(mensajeOut);
                         break;
@@ -185,6 +193,38 @@ public class SocketServer extends Thread {
                     mensajeOut.setContext("/updateAsientoEnd");
                     objectOutputStream.writeObject(mensajeOut);
                     break;
+
+                case "/infoBibliotecas":
+                    cc = new CustomerControler();
+                    session = cc.infoBibliotecas();
+                    mensajeOut.setContext("/getInfoEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/infoPlantas":
+                    biblioteca = (String) mensajeIn.getSession().get("b");
+                    cc = new CustomerControler();
+                    session = cc.infoPlantas(biblioteca);
+                    mensajeOut.setContext("/getInfoEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/infoReservas":
+                    cc = new CustomerControler();
+                    session = cc.infoReservas();
+                    mensajeOut.setContext("/getInfoEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/getCompras":
+                    user = (String) mensajeIn.getSession().get("u");
+                    cc = new CustomerControler();
+                    ArrayList<String> result = new ArrayList<>();
+                    break;
+
 
             }
 
