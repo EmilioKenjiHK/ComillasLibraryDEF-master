@@ -26,6 +26,12 @@ public class CustomerControler {
         return u;
     }
 
+    public static HashMap<String, Object> infoTienda()
+    {
+        HashMap<String,Object> h = CustomerDAO.infoTienda();
+        return h;
+    }
+
     public static ArrayList<String> getCompras(String user) {
         return CustomerDAO.getCompras(user);
     }
@@ -80,6 +86,15 @@ public class CustomerControler {
     public static void insertReserva(Reserva reserva,String username)
     {
         CustomerDAO.insertReserva(reserva,username);
+    }
+
+    public static int getPuntos(String username){
+        Integer i = CustomerDAO.getPuntos(username);
+        return i;
+    }
+
+    public static void addPuntos(String username, int puntos){
+        CustomerDAO.addPuntos(username,puntos);
     }
 
     public static HashMap<String,Object> getReservas(String username)

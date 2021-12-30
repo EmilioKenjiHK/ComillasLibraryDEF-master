@@ -100,6 +100,27 @@ public class CustomerDAO {
         return usuario;
     }
 
+    public static HashMap<String, Object> infoTienda() {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        ArrayList<Producto> a = new ArrayList<Producto>();
+        HashMap<String, Object> res = new HashMap<String, Object>();
+        Integer i = 0;
+        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM tienda");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                Producto p = new Producto(rs.getString(3),Integer.parseInt(rs.getString(1)),Integer.parseInt(rs.getString(2)));
+                a.add(i, p);
+                i += 1;
+            }
+            for (Integer j = 0; j < a.size(); j++) {
+                res.put(j.toString(), a.get(j));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return res;
+    }
+
     public static ArrayList<String> getCompras(String username) {
         Connection con = ConnectionDAO.getInstance().getConnection();
         ArrayList<String> result = new ArrayList<>();
@@ -274,6 +295,35 @@ public class CustomerDAO {
         String valor = "'" + reserva.getIdreserva() + "','" + reserva.getHi() + "','" + reserva.getHf() + "','" + username + "'";
         try(PreparedStatement pst = con.prepareStatement("INSERT INTO reservas VALUES (" + valor + ")");
             ResultSet rs = pst.executeQuery()) {
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public static int getPuntos(String username)
+    {
+        Connection con=ConnectionDAO.getInstance().getConnection();
+        int fin = 0;
+        try (PreparedStatement pst = con.prepareStatement("SELECT puntos FROM usuarios WHERE username = '" + username + "'");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                Integer i = Integer.parseInt(rs.getString(1));
+                fin = i;
+            }
+        } catch (SQLException ex) {
+
+            System.out.println(ex.getMessage());
+        }
+        return fin;
+    }
+
+    public static void addPuntos(String username, int puntos)
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        String condicion = "username = '" + username + "'";
+        try (PreparedStatement pst = con.prepareStatement("UPDATE usuarios SET puntos='"+ puntos + "' WHERE " + condicion);
+             ResultSet rs = pst.executeQuery()) {
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }

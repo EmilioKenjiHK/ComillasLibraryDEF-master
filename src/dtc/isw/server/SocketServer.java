@@ -99,6 +99,14 @@ public class SocketServer extends Thread {
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
+                case "/infoTienda":
+                    cc = new CustomerControler();
+                    session = cc.infoTienda();
+                    mensajeOut.setContext("/getInfoEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
                 case "/getCompras":
                     user = (String) mensajeIn.getSession().get("u");
                     cc = new CustomerControler();
@@ -200,6 +208,26 @@ public class SocketServer extends Thread {
                     cc = new CustomerControler();
                     cc.insertReserva(r,user);
                     mensajeOut.setContext("/insertReservaEnd");
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/getPuntos":
+                    user = (String) mensajeIn.getSession().get("u");
+                    cc = new CustomerControler();
+                    int i = cc.getPuntos(user);
+                    session = new HashMap<String,Object>();
+                    session.put("Respuesta",i);
+                    mensajeOut.setContext("/getPuntosEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/addPuntos":
+                    user = (String) mensajeIn.getSession().get("u");
+                    Integer puntos = (Integer) mensajeIn.getSession().get("p");
+                    cc = new CustomerControler();
+                    cc.addPuntos(user,puntos);
+                    mensajeOut.setContext("/addPuntosEnd");
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 

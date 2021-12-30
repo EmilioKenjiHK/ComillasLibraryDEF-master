@@ -166,6 +166,7 @@ public class JReservaGrupo extends JFrame{
                 String s2 = usuario2.getText().replace(" ","");
                 String s3 = usuario3.getText().replace(" ","");
                 boolean b = true; // Determina si se puede crear las reservas
+                int k = 0;
                 HashMap<String,String> reservas = new HashMap<String,String>();
                 Client client = new Client();
                 HashMap<String,Object> session = new HashMap<String,Object>();
@@ -217,6 +218,7 @@ public class JReservaGrupo extends JFrame{
                                 }
                                 else {
                                     reservas.put((String) mesa0.getSelectedItem(), s0);
+                                    k+=5;
                                 }
                             }
                         }
@@ -276,6 +278,7 @@ public class JReservaGrupo extends JFrame{
                                     }
                                     else {
                                         reservas.put((String) mesa1.getSelectedItem(), s1);
+                                        k+=5;
                                     }
                                 }
                             }
@@ -334,6 +337,7 @@ public class JReservaGrupo extends JFrame{
                                     }
                                     else {
                                         reservas.put((String) mesa2.getSelectedItem(), s2);
+                                        k+=5;
                                     }
                                 }
                             }
@@ -392,6 +396,7 @@ public class JReservaGrupo extends JFrame{
                                     }
                                     else {
                                         reservas.put((String) mesa3.getSelectedItem(), s3);
+                                        k+=5;
                                     }
                                 }
                             }
@@ -428,7 +433,15 @@ public class JReservaGrupo extends JFrame{
                             session.put("u",reservas.get(array.get(i)));
                             client.enviar("/insertReserva",session);
                         }
-                        JInfoBox.infoBox("Aviso","Reservacion en Grupo hecho");
+                        JInfoBox.infoBox("Aviso","Reservacion en Grupo hecho (+5 por persona)");
+                        session = new HashMap<String,Object>();
+                        session.put("u",usuario);
+                        client.enviar("/getPuntos",session);
+                        int puntos = (Integer) session.get("Respuesta");
+                        session = new HashMap<String,Object>();
+                        session.put("u",usuario);
+                        session.put("p",puntos+k);
+                        client.enviar("/addPuntos",session);
                         dispose();
                         new JOpciones(usuario);
                     }

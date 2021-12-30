@@ -152,7 +152,15 @@ public class JReservaMesa extends JFrame {
                     session.put("r",r);
                     session.put("u",usuario);
                     client.enviar("/insertReserva",session);
-                    JInfoBox.infoBox("Aviso", "Se ha completado la reserva.");
+                    JInfoBox.infoBox("Aviso", "Se ha completado la reserva (+5 puntos).");
+                    session = new HashMap<String,Object>();
+                    session.put("u",usuario);
+                    client.enviar("/getPuntos",session);
+                    int puntos = (Integer) session.get("Respuesta");
+                    session = new HashMap<String,Object>();
+                    session.put("u",usuario);
+                    session.put("p",puntos+5);
+                    client.enviar("/addPuntos",session);
                     dispose();
                     new JOpciones(usuario);
                 }

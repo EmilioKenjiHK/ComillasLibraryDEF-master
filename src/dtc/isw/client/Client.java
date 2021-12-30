@@ -103,6 +103,16 @@ public class Client {
                 System.out.println("Nueva Reserva guardada");
                 break;
 
+            case "/getPuntosEnd":
+                System.out.println("Puntos obtenidos");
+                i = (Integer) mensajeVuelta.getSession().get("Respuesta");
+                session.put("Respuesta",i);
+                break;
+
+            case "/addPuntosEnd":
+                System.out.println("Puntos sumados");
+                break;
+
             case "/borrarReservaEnd":
                 System.out.println("Reserva eliminada");
                 break;
