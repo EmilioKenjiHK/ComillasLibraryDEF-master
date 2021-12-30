@@ -1,6 +1,8 @@
 package dtc.isw.domain;
 
-public class Sancion {
+import java.io.Serializable;
+
+public class Sancion implements Serializable {
 
     //Variables
     String razon;

@@ -103,6 +103,12 @@ public class SocketServer extends Thread {
                     user = (String) mensajeIn.getSession().get("u");
                     cc = new CustomerControler();
                     ArrayList<String> result = new ArrayList<>();
+                    result = cc.getCompras(user);
+                    session = new HashMap<String,Object>();
+                    session.put("Respuesta",result);
+                    mensajeOut.setContext("/getComprasEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
                     break;
 
                 case "/getBibliotecas":
@@ -139,6 +145,28 @@ public class SocketServer extends Thread {
                     session = new HashMap<String,Object>();
                     session.put("Respuesta",b);
                     mensajeOut.setContext("/checkUsuarioEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/checkSancion":
+                    user = (String) mensajeIn.getSession().get("u");
+                    cc = new CustomerControler();
+                    b = cc.checkSancion(user);
+                    session = new HashMap<String,Object>();
+                    session.put("Respuesta",b);
+                    mensajeOut.setContext("/checkSancionEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/getSancion":
+                    user = (String) mensajeIn.getSession().get("u");
+                    cc = new CustomerControler();
+                    Sancion s = cc.getSancion(user);
+                    session = new HashMap<String,Object>();
+                    session.put("Respuesta",s);
+                    mensajeOut.setContext("/getSancionEnd");
                     mensajeOut.setSession(session);
                     objectOutputStream.writeObject(mensajeOut);
                     break;

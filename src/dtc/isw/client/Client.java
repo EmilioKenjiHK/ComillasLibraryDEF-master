@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 //import dtc.isw.domain.Customer;
+import dtc.isw.domain.Sancion;
 import org.apache.log4j.Logger;
 
 import dtc.isw.configuration.PropertiesISW;
@@ -59,6 +60,12 @@ public class Client {
                 System.out.println("Usuario obtenido");
                 break;
 
+            case "/getComprasEnd":
+                ArrayList<String> a = (ArrayList<String>) mensajeVuelta.getSession().get("Respuesta");
+                session.put("Respuesta",a);
+                System.out.println("Compras Obtenidas");
+                break;
+
             case "/getInfoEnd":
                 h = (HashMap<String, Object>) mensajeVuelta.getSession();
                 session.put("Respuesta",h);
@@ -69,6 +76,18 @@ public class Client {
                 System.out.println("\nEntrada comprobada");
                 boolean b = (Boolean) mensajeVuelta.getSession().get("Respuesta");
                 session.put("Respuesta",b);
+                break;
+
+            case "/checkSancionEnd":
+                System.out.println("\nEntrada comprobada");
+                b = (Boolean) mensajeVuelta.getSession().get("Respuesta");
+                session.put("Respuesta",b);
+                break;
+
+            case "/getSancionEnd":
+                System.out.println("Sancion obtenida");
+                Sancion s = (Sancion) mensajeVuelta.getSession().get("Respuesta");
+                session.put("Respuesta",s);
                 break;
 
             case "/getIDReservaEnd":

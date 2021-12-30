@@ -89,6 +89,7 @@ public class JAdminSancion extends JFrame {
         //Sur
         pnlSouth.add(sancionar);
         pnlSouth.add(volver);
+        this.add(pnlSouth,BorderLayout.SOUTH);
 
         //Ventana
         this.setSize(MAXWIDTH, MAXHEIGHT);

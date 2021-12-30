@@ -20,4 +20,20 @@ public class IOImagen {
             e.printStackTrace();
         }
     }
+
+    public static void setTexto(String texto,String direccion)
+    {
+        try{
+            FileWriter fw = new FileWriter(direccion);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(texto);
+            bw.close();
+        }
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 }

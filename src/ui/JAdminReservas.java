@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import dtc.isw.domain.*;
+import io.IOImagen;
 
 /**
  * In this page, the user can specify the global information for his reservation
@@ -62,23 +63,28 @@ public class JAdminReservas extends JFrame{
         this.add(pnlNorth,BorderLayout.NORTH);
 
         //Centro
-
+        client.enviar("/infoReservas",session);
         h = (HashMap<String, Object>) session.get("Respuesta");
-        List list = new List();
-        for(Integer i = 0;i<h.size();i+=2)
+        DefaultListModel list = new DefaultListModel();
+        if(h.size() == 0)
         {
-            Reserva r = (Reserva) h.get(i.toString());
-            Integer k = i+1;
-            String u = (String) h.get(k.toString());
-            list.add(u + " " + k);
+            JInfoBox.infoBox("Aviso","No hay reservas disponibles");
         }
-        reservas.add(list);
+        else {
+            for (Integer i = 0; i < h.size(); i += 2) {
+                Reserva r = (Reserva) h.get(i.toString());
+                Integer k = i + 1;
+                String u = (String) h.get(k.toString());
+                list.addElement(u + ": " + r);
+            }
+        }
+        reservas = new JList(list);
         pnlCenter.add(reservas);
-        pnlCenter.add(guardar);
 
         this.add(pnlCenter,BorderLayout.CENTER);
 
         //Sur
+        pnlSouth.add(guardar);
         pnlSouth.add(volver);
         this.add(pnlSouth,BorderLayout.SOUTH);
 
@@ -91,7 +97,23 @@ public class JAdminReservas extends JFrame{
         guardar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                String texto = "";
+                String direccion = "src/Recursos/informe.txt";
+                if(h.size() == 0)
+                {
+                    JInfoBox.infoBox("Aviso","No hay reservas disponibles");
+                }
+                else {
+                    for (Integer i = 0; i<h.size(); i+=2)
+                    {
+                        Reserva r = (Reserva) h.get(i.toString());
+                        Integer k = i + 1;
+                        String u = (String) h.get(k.toString());
+                        texto += "Usuario: " + u + " " + r + "\n";
+                    }
+                    IOImagen.setTexto(texto,direccion);
+                    JInfoBox.infoBox("Aviso","informe.txt ha sido actualizado con los valores actuales de reservas");
+                }
             }
         });
 

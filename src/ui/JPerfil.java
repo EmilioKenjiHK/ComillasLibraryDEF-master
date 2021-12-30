@@ -132,13 +132,16 @@ public class JPerfil extends JFrame {
         JLabel titlePage = new JLabel("Perfil de " + usuario, SwingConstants.CENTER);
         title.add(titlePage);
         title.setBackground(Color.cyan);
-        title.add(reservas);
-        title.add(volver);
-        title.add(tienda);
+
+        JPanel pnlSouth = new JPanel();
+        pnlSouth.add(reservas);
+        pnlSouth.add(volver);
+        pnlSouth.add(tienda);
 
         this.pack();
         getContentPane().add(title, BorderLayout.NORTH);
         getContentPane().add(form, BorderLayout.WEST);
+        getContentPane().add(pnlSouth, BorderLayout.SOUTH);
 
         //Window
         this.setSize(MAXWIDTH,MAXHEIGHT);

@@ -48,7 +48,7 @@ public class JAdminMenu extends JFrame {
         //Centro
         double d = 0.8*MAXHEIGHT;
         int h = (int) d;
-        Image logo = new ImageIcon("src/Recursos/Inspiracion.png").getImage();
+        Image logo = new ImageIcon("src/Recursos/Inspiracion2.png").getImage();
         ImageIcon ii = new ImageIcon(logo.getScaledInstance(MAXWIDTH,h,java.awt.Image.SCALE_SMOOTH));
         JLabel im = new JLabel(ii);
         pnlCenter.add(im);

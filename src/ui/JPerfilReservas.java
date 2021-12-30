@@ -36,7 +36,7 @@ public class JPerfilReservas extends JFrame{
         super("ComillasLibrary: Lista de Reservas");
 
         //Instanciar variables
-        volver = new JButton("Volver a Opciones");
+        volver = new JButton("Volver atras");
 
         info = new JLabel("Lista de Reservas",SwingConstants.CENTER);
         Font fTitulo = new Font("Arial",Font.BOLD, 25);
@@ -60,16 +60,19 @@ public class JPerfilReservas extends JFrame{
         session.put("u",usuario);
         client.enviar("/getReservas",session);
         h = (HashMap<String, Object>) session.get("Respuesta");
-        List list = new List();
-        for(Integer i = 0;i<h.size();i+=2)
+        DefaultListModel list = new DefaultListModel();
+        if(h.size() == 0)
         {
-            Reserva r = (Reserva) h.get(i.toString());
-            Integer k = i+1;
-            String u = (String) h.get(k.toString());
-            list.add(u + " " + k);
+            JInfoBox.infoBox("Aviso","No has hecho una reserva");
         }
-        reservas.add(list);
-        pnlCenter.add(reservas);
+        else {
+            for (Integer i = 0; i < h.size(); i ++) {
+                Reserva r = (Reserva) h.get(i.toString());
+                list.addElement(r);
+            }
+            reservas = new JList(list);
+            pnlCenter.add(reservas);
+        }
 
         this.add(pnlCenter,BorderLayout.CENTER);
 
@@ -87,7 +90,7 @@ public class JPerfilReservas extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                new JOpciones(usuario);
+                new JPerfil(usuario);
             }
         });
     }

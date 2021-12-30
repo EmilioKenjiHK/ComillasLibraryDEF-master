@@ -54,6 +54,18 @@ public class CustomerControler {
         return b;
     }
 
+    public static boolean checkSancion(String user)
+    {
+        boolean b = CustomerDAO.checkSancion(user);
+        return b;
+    }
+
+    public static Sancion getSancion(String user)
+    {
+        Sancion s = CustomerDAO.getSancion(user);
+        return s;
+    }
+
     public static int getID(int inicial)
     {
         int i = CustomerDAO.getID(inicial);

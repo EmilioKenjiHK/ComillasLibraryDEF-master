@@ -12,14 +12,13 @@ import dtc.isw.domain.*;
 public class CustomerDAO {
 
 
-
     public static void getClientes(ArrayList<Customer> lista) {
-        Connection con=ConnectionDAO.getInstance().getConnection();
+        Connection con = ConnectionDAO.getInstance().getConnection();
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM prueba");
              ResultSet rs = pst.executeQuery()) {
 
             while (rs.next()) {
-                lista.add(new Customer(rs.getString(0),rs.getString(1)));
+                lista.add(new Customer(rs.getString(0), rs.getString(1)));
             }
 
         } catch (SQLException ex) {
@@ -31,12 +30,12 @@ public class CustomerDAO {
     public static void main(String[] args) {
 
 
-        ArrayList<Customer> lista=new ArrayList<Customer>();
+        ArrayList<Customer> lista = new ArrayList<Customer>();
         CustomerDAO.getClientes(lista);
 
 
         for (Customer customer : lista) {
-            System.out.println("He leído el id: "+customer.getUser()+" con contrasenya: "+customer.getPassword());
+            System.out.println("He leído el id: " + customer.getUser() + " con contrasenya: " + customer.getPassword());
         }
 
 
@@ -68,7 +67,7 @@ public class CustomerDAO {
         try (PreparedStatement pst = con.prepareStatement("SELECT administrador FROM usuarios WHERE username = '" + user + "'");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                if (rs.getString(1).equals("true")) {
+                if (rs.getString(1).equals("t")) {
                     System.out.println("Admin");
                     return true;
                 }
@@ -86,7 +85,7 @@ public class CustomerDAO {
 
     public static Usuario getPerfil(String username) {
         Connection con = ConnectionDAO.getInstance().getConnection();
-        Usuario usuario = new Usuario("","","",0);
+        Usuario usuario = new Usuario("", "", "", 0);
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM usuarios WHERE username = '" + username + "'");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
@@ -112,29 +111,26 @@ public class CustomerDAO {
             while (rs.next()) {
                 result.add(rs.getString(3));
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return result;
 
     }
 
-    public static HashMap<String,Object> getBibliotecas()
-    {
+    public static HashMap<String, Object> getBibliotecas() {
         Connection con = ConnectionDAO.getInstance().getConnection();
         ArrayList<Biblioteca> a = new ArrayList<Biblioteca>();
-        HashMap<String,Object> res = new HashMap<String,Object>();
+        HashMap<String, Object> res = new HashMap<String, Object>();
         Integer i = 0;
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM asientos WHERE ocupado = false ORDER BY biblioteca asc");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                a.add(i,new Biblioteca(rs.getString(1)));
-                i +=1 ;
+                a.add(i, new Biblioteca(rs.getString(1)));
+                i += 1;
             }
-            for(Integer j = 0; j<a.size();j++)
-            {
-                res.put(j.toString(),a.get(j));
+            for (Integer j = 0; j < a.size(); j++) {
+                res.put(j.toString(), a.get(j));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -142,21 +138,19 @@ public class CustomerDAO {
         return res;
     }
 
-    public static HashMap<String,Object> getPlantas(String biblioteca)
-    {
+    public static HashMap<String, Object> getPlantas(String biblioteca) {
         Connection con = ConnectionDAO.getInstance().getConnection();
         ArrayList<Planta> a = new ArrayList<Planta>();
-        HashMap<String,Object> res = new HashMap<String,Object>();
+        HashMap<String, Object> res = new HashMap<String, Object>();
         Integer i = 0;
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM asientos WHERE ocupado = false AND biblioteca = '" + biblioteca + "' ORDER BY planta asc");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                a.add(i,new Planta(rs.getString(2)));
-                i +=1 ;
+                a.add(i, new Planta(rs.getString(2)));
+                i += 1;
             }
-            for(Integer j = 0; j<a.size();j++)
-            {
-                res.put(j.toString(),a.get(j));
+            for (Integer j = 0; j < a.size(); j++) {
+                res.put(j.toString(), a.get(j));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -164,21 +158,19 @@ public class CustomerDAO {
         return res;
     }
 
-    public static HashMap<String,Object> getMesas(String biblioteca,String planta)
-    {
+    public static HashMap<String, Object> getMesas(String biblioteca, String planta) {
         Connection con = ConnectionDAO.getInstance().getConnection();
         ArrayList<Mesa> a = new ArrayList<Mesa>();
-        HashMap<String,Object> res = new HashMap<String,Object>();
+        HashMap<String, Object> res = new HashMap<String, Object>();
         Integer i = 0;
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM asientos WHERE ocupado = false AND biblioteca = '" + biblioteca + "' AND planta = '" + planta + "' ORDER BY mesa asc");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                a.add(i,new Mesa(rs.getString(3)));
-                i +=1 ;
+                a.add(i, new Mesa(rs.getString(3)));
+                i += 1;
             }
-            for(Integer j = 0; j<a.size();j++)
-            {
-                res.put(j.toString(),a.get(j));
+            for (Integer j = 0; j < a.size(); j++) {
+                res.put(j.toString(), a.get(j));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -186,8 +178,7 @@ public class CustomerDAO {
         return res;
     }
 
-    public static boolean checkUsuario(String user)
-    {
+    public static boolean checkUsuario(String user) {
         Connection con = ConnectionDAO.getInstance().getConnection();
         try (PreparedStatement pst = con.prepareStatement("SELECT username FROM usuarios");
              ResultSet rs = pst.executeQuery()) {
@@ -206,6 +197,42 @@ public class CustomerDAO {
         }
         System.out.println("NO encontrado");
         return false;
+    }
+
+    public static boolean checkSancion(String user) {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        try (PreparedStatement pst = con.prepareStatement("SELECT username FROM sanciones");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                if (user.equals(rs.getString(1))) {
+                    System.out.println("Encontrado");
+                    return true;
+                }
+                /*else {
+                    System.out.println("NO encontrado");
+                    return false;
+                }*/
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        System.out.println("NO encontrado");
+        return false;
+    }
+
+    public static Sancion getSancion(String user)
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        Sancion s = new Sancion("",0);
+        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM sanciones WHERE username = '" + user + "'");
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                s = new Sancion(rs.getString(2),Integer.parseInt(rs.getString(3)));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return s;
     }
 
     public static int getID(int inicial)
@@ -351,6 +378,7 @@ public class CustomerDAO {
             while (rs.next()) {
 
                 a.add(i,new Reserva(Integer.parseInt(rs.getString(1)),rs.getString(2),rs.getString(3)));
+                b.add(i,""); // Para evitar IndexOutOfBoundsException
                 b.add(i+1,rs.getString(4));
                 i +=2 ;
             }

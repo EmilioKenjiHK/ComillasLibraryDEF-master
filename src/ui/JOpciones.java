@@ -1,5 +1,6 @@
 package ui;
 import dtc.isw.client.Client;
+import dtc.isw.domain.Sancion;
 import util.JInfoBox;
 
 import javax.swing.*;
@@ -88,8 +89,23 @@ public class JOpciones extends JFrame
                 }
                 else
                 {
-                    dispose();
-                    new JReservaInformacion(usuario);
+                    session = new HashMap<String,Object>();
+                    session.put("u",usuario);
+                    client.enviar("/checkSancion",session);
+                    Boolean s = (Boolean) session.get("Respuesta");
+                    if(s) // Comprobando que usuario no esta sancionado
+                        {
+                            session = new HashMap<String,Object>();
+                            session.put("u",usuario);
+                            client.enviar("/getSancion",session);
+                            Sancion sancion = (Sancion) session.get("Respuesta");
+                            System.out.println(sancion);
+                            JInfoBox.infoBox("Error","Error: No puedes reservar por esta Sancion: \n Razon: " + sancion.getRazon() + "\n Horas a esperar: " + sancion.getLimite());
+                        }
+                    else {
+                        dispose();
+                        new JReservaInformacion(usuario);
+                    }
                 }
             }
         });

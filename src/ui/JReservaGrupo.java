@@ -206,7 +206,18 @@ public class JReservaGrupo extends JFrame{
                                 b = false;
                             }
                             else {
-                                reservas.put((String) mesa0.getSelectedItem(), s0);
+                                session = new HashMap<String,Object>();
+                                session.put("u",s0);
+                                client.enviar("/checkSancion",session);
+                                Boolean s = (Boolean) session.get("Respuesta");
+                                if(s) // Comprobando que usuario no esta sancionado
+                                {
+                                    JInfoBox.infoBox("Error","Error: Usuario " + s0 + " esta sancionado. No puede reservar");
+                                    b = false;
+                                }
+                                else {
+                                    reservas.put((String) mesa0.getSelectedItem(), s0);
+                                }
                             }
                         }
                         else
@@ -254,7 +265,18 @@ public class JReservaGrupo extends JFrame{
                                     JInfoBox.infoBox("Error", "Error: Cada usuario debe ocupar un asiento diferente.");
                                     b = false;
                                 } else {
-                                    reservas.put((String) mesa1.getSelectedItem(), s1);
+                                    session = new HashMap<String,Object>();
+                                    session.put("u",s1);
+                                    client.enviar("/checkSancion",session);
+                                    Boolean s = (Boolean) session.get("Respuesta");
+                                    if(s) // Comprobando que usuario no esta sancionado
+                                    {
+                                        JInfoBox.infoBox("Error","Error: Usuario " + s1 + " esta sancionado. No puede reservar");
+                                        b = false;
+                                    }
+                                    else {
+                                        reservas.put((String) mesa1.getSelectedItem(), s1);
+                                    }
                                 }
                             }
                         }
@@ -301,7 +323,18 @@ public class JReservaGrupo extends JFrame{
                                     JInfoBox.infoBox("Error", "Error: Cada usuario debe ocupar un asiento diferente.");
                                     b = false;
                                 } else {
-                                    reservas.put((String) mesa2.getSelectedItem(), s2);
+                                    session = new HashMap<String,Object>();
+                                    session.put("u",s2);
+                                    client.enviar("/checkSancion",session);
+                                    Boolean s = (Boolean) session.get("Respuesta");
+                                    if(s) // Comprobando que usuario no esta sancionado
+                                    {
+                                        JInfoBox.infoBox("Error","Error: Usuario " + s2 + " esta sancionado. No puede reservar");
+                                        b = false;
+                                    }
+                                    else {
+                                        reservas.put((String) mesa2.getSelectedItem(), s2);
+                                    }
                                 }
                             }
                         }
@@ -348,7 +381,18 @@ public class JReservaGrupo extends JFrame{
                                     JInfoBox.infoBox("Error", "Error: Cada usuario debe ocupar un asiento diferente.");
                                     b = false;
                                 } else {
-                                    reservas.put((String) mesa3.getSelectedItem(), s3);
+                                    session = new HashMap<String,Object>();
+                                    session.put("u",s3);
+                                    client.enviar("/checkSancion",session);
+                                    Boolean s = (Boolean) session.get("Respuesta");
+                                    if(s) // Comprobando que usuario no esta sancionado
+                                    {
+                                        JInfoBox.infoBox("Error","Error: Usuario " + s3 + " esta sancionado. No puede reservar");
+                                        b = false;
+                                    }
+                                    else {
+                                        reservas.put((String) mesa3.getSelectedItem(), s3);
+                                    }
                                 }
                             }
                         }

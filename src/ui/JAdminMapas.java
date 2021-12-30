@@ -63,6 +63,7 @@ public class JAdminMapas extends JFrame{
         biblioteca = new JComboBox();
         planta = new JComboBox();
         mapa = new JButton("Nuevo Mapa");
+        confirmar = new JButton("Confirmar actualizacion de Mapa");
         salir = new JButton("Volver a Opciones");
         b = new JLabel("Biblioteca:", SwingConstants.CENTER);
         p = new JLabel("Planta:", SwingConstants.CENTER);
