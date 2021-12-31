@@ -9,6 +9,8 @@ public class Usuario implements Serializable {
     String correo;
     int puntos;
 
+    private static Usuario instancia;
+
     public Usuario(String username, String password, String correo, int puntos) {
         this.username = username;
         this.password = password;
@@ -47,4 +49,13 @@ public class Usuario implements Serializable {
     public void setPuntos(int puntos) {
         this.puntos = puntos;
     }
+
+    public static Usuario getInstance(String username,String password, String correo,int puntos) {
+        if(instancia == null)
+        {
+            instancia = new Usuario(username,password,correo,puntos);
+        }
+        return instancia;
+    }
+
 }

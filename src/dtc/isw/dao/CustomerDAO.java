@@ -12,6 +12,7 @@ import dtc.isw.domain.*;
 public class CustomerDAO {
 
 
+
     public static void getClientes(ArrayList<Customer> lista) {
         Connection con = ConnectionDAO.getInstance().getConnection();
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM prueba");
@@ -144,17 +145,21 @@ public class CustomerDAO {
     }
 
     public static HashMap<String, Object> getBibliotecas() {
+        LugarCache.loadCache();
         Connection con = ConnectionDAO.getInstance().getConnection();
-        ArrayList<Biblioteca> a = new ArrayList<Biblioteca>();
+        ArrayList<Lugar> a = new ArrayList<Lugar>();
         HashMap<String, Object> res = new HashMap<String, Object>();
         Integer i = 0;
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM asientos WHERE ocupado = false ORDER BY biblioteca asc");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                a.add(i, new Biblioteca(rs.getString(1)));
+                Lugar biblioteca = (Lugar) LugarCache.getLugar("1");
+                biblioteca.setNombre(rs.getString(1));
+                a.add(i, biblioteca);
                 i += 1;
             }
             for (Integer j = 0; j < a.size(); j++) {
+                System.out.println(a.get(j));
                 res.put(j.toString(), a.get(j));
             }
         } catch (SQLException ex) {
@@ -164,14 +169,17 @@ public class CustomerDAO {
     }
 
     public static HashMap<String, Object> getPlantas(String biblioteca) {
+        LugarCache.loadCache();
         Connection con = ConnectionDAO.getInstance().getConnection();
-        ArrayList<Planta> a = new ArrayList<Planta>();
+        ArrayList<Lugar> a = new ArrayList<Lugar>();
         HashMap<String, Object> res = new HashMap<String, Object>();
         Integer i = 0;
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM asientos WHERE ocupado = false AND biblioteca = '" + biblioteca + "' ORDER BY planta asc");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                a.add(i, new Planta(rs.getString(2)));
+                Lugar planta = (Lugar) LugarCache.getLugar("2");
+                planta.setNombre(rs.getString(2));
+                a.add(i, planta);
                 i += 1;
             }
             for (Integer j = 0; j < a.size(); j++) {
@@ -184,14 +192,17 @@ public class CustomerDAO {
     }
 
     public static HashMap<String, Object> getMesas(String biblioteca, String planta) {
+        LugarCache.loadCache();
         Connection con = ConnectionDAO.getInstance().getConnection();
-        ArrayList<Mesa> a = new ArrayList<Mesa>();
+        ArrayList<Lugar> a = new ArrayList<Lugar>();
         HashMap<String, Object> res = new HashMap<String, Object>();
         Integer i = 0;
         try (PreparedStatement pst = con.prepareStatement("SELECT * FROM asientos WHERE ocupado = false AND biblioteca = '" + biblioteca + "' AND planta = '" + planta + "' ORDER BY mesa asc");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                a.add(i, new Mesa(rs.getString(3)));
+                Lugar mesa = (Lugar) LugarCache.getLugar("3");
+                mesa.setNombre(rs.getString(3));
+                a.add(i, mesa);
                 i += 1;
             }
             for (Integer j = 0; j < a.size(); j++) {
@@ -378,14 +389,17 @@ public class CustomerDAO {
 
     public static HashMap<String,Object> infoBibliotecas()
     {
+        LugarCache.loadCache();
         Connection con = ConnectionDAO.getInstance().getConnection();
-        ArrayList<Biblioteca> a = new ArrayList<Biblioteca>();
+        ArrayList<Lugar> a = new ArrayList<Lugar>();
         HashMap<String,Object> res = new HashMap<String,Object>();
         Integer i = 0;
         try (PreparedStatement pst = con.prepareStatement("SELECT DISTINCT biblioteca FROM asientos ORDER BY biblioteca ASC;");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                a.add(i,new Biblioteca(rs.getString(1)));
+                Lugar biblioteca = (Lugar) LugarCache.getLugar("1");
+                biblioteca.setNombre(rs.getString(1));
+                a.add(i,biblioteca);
                 i +=1 ;
             }
             for(Integer j = 0; j<a.size();j++)
@@ -400,14 +414,17 @@ public class CustomerDAO {
 
     public static HashMap<String,Object> infoPlantas(String biblioteca)
     {
+        LugarCache.loadCache();
         Connection con = ConnectionDAO.getInstance().getConnection();
-        ArrayList<Planta> a = new ArrayList<Planta>();
+        ArrayList<Lugar> a = new ArrayList<Lugar>();
         HashMap<String,Object> res = new HashMap<String,Object>();
         Integer i = 0;
         try (PreparedStatement pst = con.prepareStatement("SELECT DISTINCT planta FROM asientos WHERE ocupado = false AND biblioteca = '" + biblioteca + "' ORDER BY planta ASC");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                a.add(i,new Planta(rs.getString(1)));
+                Lugar planta = (Lugar) LugarCache.getLugar("2");
+                planta.setNombre(rs.getString(1));
+                a.add(i,planta);
                 i +=1 ;
             }
             for(Integer j = 0; j<a.size();j++)
