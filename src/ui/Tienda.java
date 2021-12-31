@@ -4,13 +4,12 @@ import dtc.isw.client.Client;
 import dtc.isw.domain.Producto;
 import dtc.isw.domain.Usuario;
 import util.JInfoBox;
+import util.SpringUtilities;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -46,7 +45,7 @@ public class Tienda extends JFrame{
         map.put("u",usuario);
         cl.enviar("/getPerfil",map);
         Usuario u = (Usuario) map.get("Respuesta");
-        p = new JLabel("Objeto a comprar (Tienes " + ((Integer) u.getPuntos()).toString() + "puntos) :");
+        p = new JLabel("Objeto a comprar (Tienes " + ((Integer) u.getPuntos()).toString() + " puntos) :");
 
         //Extraemos info de Tienda
         map = new HashMap<String,Object>();
@@ -71,12 +70,17 @@ public class Tienda extends JFrame{
         this.add(pnlNorth,BorderLayout.NORTH);
 
         //Centro
+        SpringLayout layout = new SpringLayout();
+        pnlCenter.setLayout(layout);
+        int numRows = 0;
         for(Integer i=0;i<response.size();i++)
         {
             Producto p = (Producto) response.get(i.toString());
             JLabel l = new JLabel(p.toString());
             pnlCenter.add(l);
+            numRows+=1;
         }
+        SpringUtilities.makeCompactGrid(pnlCenter,numRows,1,5,5,5,5);
         this.add(pnlCenter,BorderLayout.CENTER);
 
 

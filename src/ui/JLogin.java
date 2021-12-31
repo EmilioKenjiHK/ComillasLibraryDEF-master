@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
+import util.SpringUtilities;
 
 /**
  * Provides the user interface for the user to log in into the application
@@ -22,8 +23,8 @@ public class JLogin extends JFrame {
     JButton confirmar;
     JButton volver;
 
-    public static int MAXWIDTH = 800;
-    public static int MAXHEIGHT = 800;
+    public static int MAXWIDTH = 600;
+    public static int MAXHEIGHT = 200;
 
     public static void main(String argv[]) {
         new JLogin();
@@ -42,7 +43,7 @@ public class JLogin extends JFrame {
         password1 = new JLabel("Password: ",SwingConstants.CENTER);
         confirmar = new JButton("Confirmar");
         volver = new JButton("Volver atras");
-        intro = new JLabel("Introduzca tus datos, por favor.",SwingConstants.CENTER);
+        intro = new JLabel("Introduzca vuestros datos, por favor.",SwingConstants.CENTER);
         Font fTexto = new Font("Arial", Font.PLAIN, 12);
         Font fTitulo = new Font("Arial",Font.BOLD, 25);
 
@@ -52,15 +53,9 @@ public class JLogin extends JFrame {
         JPanel pnlSouth = new JPanel();
 
         //Modificacion fuentes
-        usuario1.setFont(fTitulo);
-        password1.setFont(fTitulo);
-        intro.setFont(fTexto);
-
-        usuario1.setOpaque(true);
-        usuario1.setBackground(Color.GRAY);
-
-        password1.setOpaque(true);
-        password1.setBackground(Color.GRAY);
+        usuario1.setFont(fTexto);
+        password1.setFont(fTexto);
+        intro.setFont(fTitulo);
 
         intro.setOpaque(true);
         intro.setBackground(Color.CYAN);
@@ -71,11 +66,13 @@ public class JLogin extends JFrame {
         this.add(pnlNorth, BorderLayout.NORTH);
 
         //Centro
-        pnlCenter.setLayout(new GridLayout(2, 2,0 , 2));
+        SpringLayout layout = new SpringLayout();
+        pnlCenter.setLayout(layout);
         pnlCenter.add(usuario1);
         pnlCenter.add(usuario0);
         pnlCenter.add(password1);
         pnlCenter.add(password0);
+        SpringUtilities.makeCompactGrid(pnlCenter,2,2,5,5,5,5);
         this.add(pnlCenter, BorderLayout.CENTER);
 
         //Sur

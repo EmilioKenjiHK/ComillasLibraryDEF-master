@@ -75,7 +75,7 @@ public class JAdminReservas extends JFrame{
                 Reserva r = (Reserva) h.get(i.toString());
                 Integer k = i + 1;
                 String u = (String) h.get(k.toString());
-                list.addElement(u + ": " + r);
+                list.addElement("Usuario: " + u + " Informacion: " + r);
             }
         }
         reservas = new JList(list);

@@ -3,6 +3,7 @@ package ui;
 import dtc.isw.client.Client;
 import dtc.isw.domain.Sancion;
 import util.JInfoBox;
+import util.SpringUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +34,7 @@ public class JAdminSancion extends JFrame {
     HashMap<String,Object> session = new HashMap<>();
 
     public static int MAXWIDTH = 800;
-    public static int MAXHEIGHT = 800;
+    public static int MAXHEIGHT = 300;
 
     public void main(String argv[]){new JAdminSancion("Admin");}
 
@@ -42,7 +43,7 @@ public class JAdminSancion extends JFrame {
         super("ComillasLibrary: Sancion");
 
         //Instanciar variables
-        info = new JLabel("Sancionar Usuario");
+        info = new JLabel("Sancionar Usuario", SwingConstants.CENTER);
         usuario = new JTextField(50);
         razon = new JTextField(50);
         limite = new JComboBox();
@@ -74,16 +75,20 @@ public class JAdminSancion extends JFrame {
         }
 
         //Norte
+        pnlNorth.setLayout(new GridLayout(1,1));
         pnlNorth.add(info);
         this.add(pnlNorth,BorderLayout.NORTH);
 
         //Centro
+        SpringLayout layout = new SpringLayout();
+        pnlCenter.setLayout(layout);
         pnlCenter.add(u);
         pnlCenter.add(usuario);
         pnlCenter.add(r);
         pnlCenter.add(razon);
         pnlCenter.add(l);
         pnlCenter.add(limite);
+        SpringUtilities.makeCompactGrid(pnlCenter,3,2,5,5,5,5);
         this.add(pnlCenter,BorderLayout.CENTER);
 
         //Sur

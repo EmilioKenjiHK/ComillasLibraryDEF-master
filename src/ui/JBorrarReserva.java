@@ -10,6 +10,7 @@ import java.util.HashMap;
 import dtc.isw.client.Client;
 import dtc.isw.domain.*;
 import util.JInfoBox;
+import util.SpringUtilities;
 
 public class JBorrarReserva extends JFrame {
     JLabel titulo;
@@ -22,7 +23,7 @@ public class JBorrarReserva extends JFrame {
     HashMap<String,Object> session = new HashMap<String,Object>();
 
     public static int MAXWIDTH = 800;
-    public static int MAXHEIGHT = 800;
+    public static int MAXHEIGHT = 200;
 
     public void main(String argv[])
     {
@@ -34,7 +35,7 @@ public class JBorrarReserva extends JFrame {
         super("ComillasLibrary: Borrar Reserva");
 
         //Instanciar variables
-        titulo = new JLabel("Reservas guardadas del usuario "+usuario);
+        titulo = new JLabel("Reservas guardadas del usuario "+usuario, SwingConstants.CENTER);
         reservas = new JComboBox();
         confirmar = new JButton("Borrar Reserva Elegida");
         volver = new JButton("Volver a Opciones");
@@ -85,8 +86,10 @@ public class JBorrarReserva extends JFrame {
         this.add(pnlNorth, BorderLayout.NORTH);
 
         //Centro
-        pnlCenter.setLayout(new GridLayout(1,1));
+        SpringLayout layout = new SpringLayout();
+        pnlCenter.setLayout(layout);
         pnlCenter.add(reservas);
+        SpringUtilities.makeCompactGrid(pnlCenter,1,1,5,5,5,5);
         this.add(pnlCenter, BorderLayout.CENTER);
 
         //Sur

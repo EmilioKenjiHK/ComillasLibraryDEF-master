@@ -432,6 +432,7 @@ public class CustomerDAO {
             while (rs.next()) {
 
                 a.add(i,new Reserva(Integer.parseInt(rs.getString(1)),rs.getString(2),rs.getString(3)));
+                a.add(i+1,new Reserva(0,"00:00","00:00")); // Para evitar IndexOutOfBoundsException
                 b.add(i,""); // Para evitar IndexOutOfBoundsException
                 b.add(i+1,rs.getString(4));
                 i +=2 ;

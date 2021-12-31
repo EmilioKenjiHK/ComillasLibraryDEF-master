@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 import dtc.isw.domain.*;
 import io.IOImagen;
+import util.SpringUtilities;
 
 /**
  * In this page, the admnistrator can change the map of a chosen library and level
@@ -45,7 +46,7 @@ public class JAdminMapas extends JFrame{
     ArrayList<Object> noRepeat = new ArrayList<Object>();
 
     public static int MAXWIDTH = 800;
-    public static int MAXHEIGHT = 800;
+    public static int MAXHEIGHT = 300;
 
     public void main(String argv[])
     {
@@ -82,15 +83,6 @@ public class JAdminMapas extends JFrame{
         p.setFont(fTitulo);
         m.setFont(fTitulo);
         intro.setFont(fTexto);
-
-        b.setOpaque(true);
-        b.setBackground(Color.GRAY);
-
-        p.setOpaque(true);
-        p.setBackground(Color.GRAY);
-
-        m.setOpaque(true);
-        m.setBackground(Color.GRAY);
 
         intro.setOpaque(true);
         intro.setBackground(Color.CYAN);
@@ -155,13 +147,15 @@ public class JAdminMapas extends JFrame{
 
 
         //Centro
-        pnlCenter.setLayout(new GridLayout(3, 2, 0, 2));
+        SpringLayout layout = new SpringLayout();
+        pnlCenter.setLayout(layout);
         pnlCenter.add(b);
         pnlCenter.add(biblioteca);
         pnlCenter.add(p);
         pnlCenter.add(planta);
-        pnlCenter.add(m);
         pnlCenter.add(mapa);
+        pnlCenter.add(m);
+        SpringUtilities.makeCompactGrid(pnlCenter,3,2,5,5,5,5);
         this.add(pnlCenter, BorderLayout.CENTER);
 
         //Sur

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import dtc.isw.domain.*;
+import util.SpringUtilities;
 
 /**
  * In this page, the user can specify the global information for his reservation
@@ -49,7 +50,7 @@ public class JReservaInformacion extends JFrame {
     ArrayList<Object> noRepeat = new ArrayList<Object>();
 
     public static int MAXWIDTH = 800;
-    public static int MAXHEIGHT = 800;
+    public static int MAXHEIGHT = 300;
 
     public void main(String argv[])
     {
@@ -91,18 +92,6 @@ public class JReservaInformacion extends JFrame {
         hi.setFont(fTitulo);
         hf.setFont(fTitulo);
         intro.setFont(fTexto);
-
-        b.setOpaque(true);
-        b.setBackground(Color.GRAY);
-
-        p.setOpaque(true);
-        p.setBackground(Color.GRAY);
-
-        hi.setOpaque(true);
-        hi.setBackground(Color.GRAY);
-
-        hf.setOpaque(true);
-        hf.setBackground(Color.GRAY);
 
         intro.setOpaque(true);
         intro.setBackground(Color.CYAN);
@@ -212,7 +201,8 @@ public class JReservaInformacion extends JFrame {
         });
 
         //Centro
-        pnlCenter.setLayout(new GridLayout(4, 2, 0, 2));
+        SpringLayout layout = new SpringLayout();
+        pnlCenter.setLayout(layout);
         pnlCenter.add(b);
         pnlCenter.add(biblioteca);
         pnlCenter.add(p);
@@ -221,6 +211,7 @@ public class JReservaInformacion extends JFrame {
         pnlCenter.add(horaIn);
         pnlCenter.add(hf);
         pnlCenter.add(horaFin);
+        SpringUtilities.makeCompactGrid(pnlCenter,4,2,5,5,5,5);
         this.add(pnlCenter, BorderLayout.CENTER);
 
         //Sur
@@ -273,6 +264,7 @@ public class JReservaInformacion extends JFrame {
                     valores.add((String) planta.getSelectedItem());
                     valores.add((String) horaIn.getSelectedItem());
                     valores.add((String) horaFin.getSelectedItem());
+                    JInfoBox.infoBox("Aviso", "Puedes rellenar entre 1-4 mesas (1 para cada persona).");
                     new JReservaGrupo(usuario, valores);
                 }
             }
