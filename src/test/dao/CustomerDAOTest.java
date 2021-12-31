@@ -14,6 +14,30 @@ class CustomerDAOTest extends TestCase {
     private static CustomerDAO  dao = null;
 
     @Test
+    public void checkLogin() {
+        String fakeu = "aDmIn";
+        String fakep = "PassworD";
+        String fakep2 = "passw0rd";
+        String username = "Admin";
+        String password = "password";
+
+        assertEquals(false,dao.checkLogin(fakeu,fakep));
+        assertEquals(false,dao.checkLogin(username,fakep));
+        assertEquals(false,dao.checkLogin(username,fakep2));
+        assertEquals(false,dao.checkLogin(fakeu,password));
+        assertEquals(true,dao.checkLogin(username,password));
+    }
+
+    @Test
+    public void checkAdmin() {
+        String u = "1"; //User
+        String a = "Admin"; //Admin
+
+        assertEquals(false,dao.checkAdmin(u));
+        assertEquals(true,dao.checkAdmin(a));
+    }
+
+    @Test
     public void getPerfil() {
         String username = "Admin";
         Usuario res = dao.getPerfil(username);
@@ -34,6 +58,11 @@ class CustomerDAOTest extends TestCase {
         assertEquals("1A",m.getNombre());
     }
 
+    @Test
+    public void checkSancion() {
+        String a = "Admin"; //Admin nunca puede recibir sancion (no pongo usuarios ya que se pueden asignarles)
+        assertEquals(false,dao.checkSancion(a));
+    }
 
     @Test
     public void getReservas(){

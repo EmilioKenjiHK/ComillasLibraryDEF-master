@@ -287,6 +287,16 @@ public class SocketServer extends Thread {
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
+                case "/checkAdmin":
+                    user = (String) mensajeIn.getSession().get("u");
+                    cc = new CustomerControler();
+                    Boolean admin = cc.checkAdmin(user);
+                    session = new HashMap<String,Object>();
+                    session.put("Respuesta",admin);
+                    mensajeOut.setContext("/checkAdminEnd");
+                    mensajeOut.setSession(session);
+                    objectOutputStream.writeObject(mensajeOut);
+
                 case "/setSancion":
                     user = (String) mensajeIn.getSession().get("u");
                     Sancion sancion = (Sancion) mensajeIn.getSession().get("s");
@@ -295,6 +305,7 @@ public class SocketServer extends Thread {
                     mensajeOut.setContext("/setSancionEnd");
                     objectOutputStream.writeObject(mensajeOut);
                     break;
+
 
 
             }

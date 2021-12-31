@@ -119,6 +119,12 @@ public class Client {
                 System.out.println("Reserva eliminada");
                 break;
 
+            case "/checkAdminEnd":
+                System.out.println("Admin comprobado");
+                b = (Boolean) mensajeVuelta.getSession().get("Respuesta");
+                session.put("Respuesta",b);
+                break;
+
             case "/setSancionEnd":
                 System.out.println("Sancion impuesta");
                 break;

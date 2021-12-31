@@ -116,19 +116,27 @@ public class JAdminSancion extends JFrame {
                     client.enviar("/checkUsuario", session); // Debemos comprobar que Usuario ha sido bien insertado
                     Boolean b = (Boolean) session.get("Respuesta");
                     if (b) {
-                        String s0 = razon.getText().replace(" ","");
-                        if(s0.equals(""))
-                        {
-                            razon.setText("Razon Desconocido");
-                        }
-                        Sancion s = new Sancion(razon.getText(),(Integer) limite.getSelectedItem());
                         session = new HashMap<String,Object>();
                         session.put("u",usuario.getText());
-                        session.put("s", s);
-                        client.enviar("/setSancion",session);
-                        JInfoBox.infoBox("Aviso", "Sancion implementado correctamente.");
-                        dispose();
-                        new JAdminMenu(administrador);
+                        client.enviar("/checkAdmin", session);
+                        Boolean bb = (Boolean) session.get("Respuesta");
+                        if(!bb) {
+                            String s0 = razon.getText().replace(" ", "");
+                            if (s0.equals("")) {
+                                razon.setText("Razon Desconocido");
+                            }
+                            Sancion s = new Sancion(razon.getText(), (Integer) limite.getSelectedItem());
+                            session = new HashMap<String, Object>();
+                            session.put("u", usuario.getText());
+                            session.put("s", s);
+                            client.enviar("/setSancion", session);
+                            JInfoBox.infoBox("Aviso", "Sancion implementado correctamente.");
+                            dispose();
+                            new JAdminMenu(administrador);
+                        }
+                        else {
+                            JInfoBox.infoBox("Error", "Error: Nunca es posible asigna un Administrador una sancion.");
+                        }
 
                     } else {
                         JInfoBox.infoBox("Error", "Error: Usuario Desconocido. Comprueba que ha puesto bien el Usuario.");
