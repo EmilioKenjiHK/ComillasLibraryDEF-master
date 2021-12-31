@@ -105,11 +105,10 @@ public class CustomerDAO {
         ArrayList<Producto> a = new ArrayList<Producto>();
         HashMap<String, Object> res = new HashMap<String, Object>();
         Integer i = 0;
-        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM tienda");
+        try (PreparedStatement pst = con.prepareStatement("SELECT * FROM tienda where cantidad != 0");
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                Producto p = new Producto(rs.getString(3),Integer.parseInt(rs.getString(1)),Integer.parseInt(rs.getString(2)));
-                a.add(i, p);
+                a.add(i, new Producto(rs.getString(3),Integer.parseInt(rs.getString(1)),Integer.parseInt(rs.getString(2))));
                 i += 1;
             }
             for (Integer j = 0; j < a.size(); j++) {
@@ -121,22 +120,27 @@ public class CustomerDAO {
         return res;
     }
 
-    public static ArrayList<String> getCompras(String username) {
+    public static void updateTienda(String objeto, int cantidad)
+    {
         Connection con = ConnectionDAO.getInstance().getConnection();
-        ArrayList<String> result = new ArrayList<>();
+        String condicion = "objeto = '" + objeto + "'";
+        try (PreparedStatement pst = con.prepareStatement("UPDATE tienda SET cantidad = " + cantidad + " WHERE " + condicion);
+             ResultSet rs = pst.executeQuery()) {
 
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement("SELECT * FROM tienda JOIN usuarios ON tienda.username = usuarios.username WHERE usuarios.username = '" + username + "'");
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                result.add(rs.getString(3));
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
-        return result;
+    }
 
+    public static void insertProducto(Producto producto,String username)
+    {
+        Connection con = ConnectionDAO.getInstance().getConnection();
+        String valor = "'" + producto.getObjeto() + "','" + username + "'";
+        try(PreparedStatement pst = con.prepareStatement("INSERT INTO producto VALUES (" + valor + ")");
+            ResultSet rs = pst.executeQuery()) {
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     public static HashMap<String, Object> getBibliotecas() {
@@ -277,7 +281,7 @@ public class CustomerDAO {
         return fin;
     }
 
-    public static void updateAsiento(String biblioteca,String planta, String mesa, int id) // SET ID (HOW TO PUT MULTIPLE SETS
+    public static void updateAsiento(String biblioteca,String planta, String mesa, int id)
     {
         Connection con = ConnectionDAO.getInstance().getConnection();
         String condicion = "biblioteca = '" + biblioteca + "' AND planta = '" + planta + "' AND mesa = '" + mesa + "'";
@@ -317,7 +321,7 @@ public class CustomerDAO {
         return fin;
     }
 
-    public static void addPuntos(String username, int puntos)
+    public static void updatePuntos(String username, int puntos)
     {
         Connection con = ConnectionDAO.getInstance().getConnection();
         String condicion = "username = '" + username + "'";

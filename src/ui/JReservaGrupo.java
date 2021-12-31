@@ -441,7 +441,7 @@ public class JReservaGrupo extends JFrame{
                         session = new HashMap<String,Object>();
                         session.put("u",usuario);
                         session.put("p",puntos+k);
-                        client.enviar("/addPuntos",session);
+                        client.enviar("/updatePuntos",session);
                         dispose();
                         new JOpciones(usuario);
                     }

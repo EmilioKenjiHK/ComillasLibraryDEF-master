@@ -60,16 +60,18 @@ public class Client {
                 System.out.println("Usuario obtenido");
                 break;
 
-            case "/getComprasEnd":
-                ArrayList<String> a = (ArrayList<String>) mensajeVuelta.getSession().get("Respuesta");
-                session.put("Respuesta",a);
-                System.out.println("Compras Obtenidas");
-                break;
-
             case "/getInfoEnd":
                 h = (HashMap<String, Object>) mensajeVuelta.getSession();
                 session.put("Respuesta",h);
                 System.out.println("Informacion obtenida");
+                break;
+
+            case "/updateTiendaEnd":
+                System.out.println("Tienda actualizada");
+                break;
+
+            case "/insertProductoEnd":
+                System.out.println("Producto insertado");
                 break;
 
             case "/checkUsuarioEnd":
@@ -109,8 +111,8 @@ public class Client {
                 session.put("Respuesta",i);
                 break;
 
-            case "/addPuntosEnd":
-                System.out.println("Puntos sumados");
+            case "/updatePuntosEnd":
+                System.out.println("Puntos actualizados");
                 break;
 
             case "/borrarReservaEnd":

@@ -32,8 +32,14 @@ public class CustomerControler {
         return h;
     }
 
-    public static ArrayList<String> getCompras(String user) {
-        return CustomerDAO.getCompras(user);
+    public static void updateTienda(String objeto, int cantidad)
+    {
+        CustomerDAO.updateTienda(objeto,cantidad);
+    }
+
+    public static void insertProducto(Producto producto,String username)
+    {
+        CustomerDAO.insertProducto(producto,username);
     }
 
     public static HashMap<String,Object> getBibliotecas()
@@ -93,8 +99,8 @@ public class CustomerControler {
         return i;
     }
 
-    public static void addPuntos(String username, int puntos){
-        CustomerDAO.addPuntos(username,puntos);
+    public static void updatePuntos(String username, int puntos){
+        CustomerDAO.updatePuntos(username,puntos);
     }
 
     public static HashMap<String,Object> getReservas(String username)

@@ -107,15 +107,21 @@ public class SocketServer extends Thread {
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
-                case "/getCompras":
+                case "/updateTienda":
+                    String o = (String) mensajeIn.getSession().get("o");
+                    int c = (Integer) mensajeIn.getSession().get("c");
+                    cc = new CustomerControler();
+                    cc.updateTienda(o,c);
+                    mensajeOut.setContext("/updateTiendaEnd");
+                    objectOutputStream.writeObject(mensajeOut);
+                    break;
+
+                case "/insertProducto":
+                    Producto p = (Producto) mensajeIn.getSession().get("p");
                     user = (String) mensajeIn.getSession().get("u");
                     cc = new CustomerControler();
-                    ArrayList<String> result = new ArrayList<>();
-                    result = cc.getCompras(user);
-                    session = new HashMap<String,Object>();
-                    session.put("Respuesta",result);
-                    mensajeOut.setContext("/getComprasEnd");
-                    mensajeOut.setSession(session);
+                    cc.insertProducto(p,user);
+                    mensajeOut.setContext("/insertProductoEnd");
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
@@ -222,12 +228,12 @@ public class SocketServer extends Thread {
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 
-                case "/addPuntos":
+                case "/updatePuntos":
                     user = (String) mensajeIn.getSession().get("u");
                     Integer puntos = (Integer) mensajeIn.getSession().get("p");
                     cc = new CustomerControler();
-                    cc.addPuntos(user,puntos);
-                    mensajeOut.setContext("/addPuntosEnd");
+                    cc.updatePuntos(user,puntos);
+                    mensajeOut.setContext("/updatePuntosEnd");
                     objectOutputStream.writeObject(mensajeOut);
                     break;
 

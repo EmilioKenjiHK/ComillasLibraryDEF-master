@@ -3,6 +3,7 @@ package ui;
 import dtc.isw.client.Client;
 import dtc.isw.domain.Producto;
 import dtc.isw.domain.Usuario;
+import util.JInfoBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,7 +46,7 @@ public class Tienda extends JFrame{
         map.put("u",usuario);
         cl.enviar("/getPerfil",map);
         Usuario u = (Usuario) map.get("Respuesta");
-        p = new JLabel("Puntos: " + ((Integer) u.getPuntos()).toString());
+        p = new JLabel("Objeto a comprar (Tienes " + ((Integer) u.getPuntos()).toString() + "puntos) :");
 
         //Extraemos info de Tienda
         map = new HashMap<String,Object>();
@@ -60,14 +61,24 @@ public class Tienda extends JFrame{
         //Configuracion ComboBox
         for(Integer i=0;i<response.size();i++)
         {
-            Producto p = (Producto) response.get("Respuesta");
-
+            Producto p = (Producto) response.get(i.toString());
+            seleccionar.addItem(p);
         }
 
-
         //Norte
+        pnlNorth.add(p);
+        pnlNorth.add(seleccionar);
+        this.add(pnlNorth,BorderLayout.NORTH);
 
         //Centro
+        for(Integer i=0;i<response.size();i++)
+        {
+            Producto p = (Producto) response.get(i.toString());
+            JLabel l = new JLabel(p.toString());
+            pnlCenter.add(l);
+        }
+        this.add(pnlCenter,BorderLayout.CENTER);
+
 
         //Sur
         pnlSouth.add(comprar);
@@ -83,6 +94,35 @@ public class Tienda extends JFrame{
         comprar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Comprobar que tiene suficientes puntos
+                Producto p = (Producto) seleccionar.getSelectedItem();
+                if(p.getPrecio() > u.getPuntos())
+                {
+                    JInfoBox.infoBox("Error","Error: No tienes los puntos para comprar el objeto");
+                }
+                else{
+                    HashMap<String,Object> session = new HashMap<String,Object>();
+                    // Restar puntos del usuario
+                     session.put("u",usuario);
+                     int i = u.getPuntos() - p.getPrecio();
+                     session.put("p",i);
+                     cl.enviar("/updatePuntos",session);
+
+                    // Añadir a base de datos de producto
+                    session = new HashMap<String,Object>();
+                    session.put("u",usuario);
+                    session.put("p",p);
+                    cl.enviar("/insertProducto",session);
+
+                    // Actualizar tienda
+                    session = new HashMap<>();
+                    session.put("o",p.getObjeto());
+                    session.put("c",p.getCantidad()-1);
+                    cl.enviar("/updateTienda",session);
+                    JInfoBox.infoBox("Aviso","Se ha comprado el objeto. Reclama el objeto en la recepcion");
+                    dispose();
+                    new Tienda(usuario);
+                }
 
             }
         });

@@ -160,7 +160,7 @@ public class JReservaMesa extends JFrame {
                     session = new HashMap<String,Object>();
                     session.put("u",usuario);
                     session.put("p",puntos+5);
-                    client.enviar("/addPuntos",session);
+                    client.enviar("/updatePuntos",session);
                     dispose();
                     new JOpciones(usuario);
                 }
